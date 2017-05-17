@@ -7,8 +7,8 @@ describe('real-time-cubing App', () => {
     page = new RealTimeCubingPage();
   });
 
-  it('should display message saying app works', () => {
+  it('displays the application title within the toolbar', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('app works!');
+    expect(page.getToolbarTitleText()).toEqual('Real Time Cubing');
   });
 });
