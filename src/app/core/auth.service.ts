@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
-import {Observable} from 'rxjs/Observable';
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
+import * as jwtDecode from 'jwt-decode';
 
 @Injectable()
 export class AuthService {
@@ -15,10 +16,11 @@ export class AuthService {
     params.set('redirect_uri', 'http://localhost:4200/oauth-callback');
     const url = `https://staging.worldcubeassociation.org/oauth/authorize?${params.toString()}`;
     const popup: Window = window.open(url, '', 'width=600,height=400');
-    Observable.fromEvent(window, 'message')
-      .map((event: MessageEvent) => event.data)
-      .subscribe(data => {
-        console.log(data);
+    Observable.fromEvent(window, 'storage')
+      .filter((event: StorageEvent) => event.key === 'jwt')
+      .map((event: StorageEvent) => event.newValue)
+      .subscribe(token => {
+        console.log(jwtDecode(token));
       });
   }
 }

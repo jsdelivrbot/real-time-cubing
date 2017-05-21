@@ -29,10 +29,9 @@ app.get('/oauth-callback', (req, res) => {
     .then(response => response.body.me)
     .then(user => {
       const token = jsonwebtoken.sign(user, 'secret');
-      const data = JSON.stringify({ jwt: token, user });
       res.send(`
         <script>
-          window.opener.postMessage(${data}, 'http://localhost:4200');
+          localStorage.setItem('jwt', '${token}');
           window.close();
         </script>
       `);
