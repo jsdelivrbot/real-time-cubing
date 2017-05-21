@@ -19,7 +19,7 @@ app.get('/oauth-callback', (req, res) => {
       client_secret: 'ede9032c84ba2f7b3fddf307e7a6e23107b599729936e66f542e4f2f0e072ebf',
       code: req.query.code,
       grant_type: 'authorization_code',
-      redirect_uri: 'http://localhost:3000/oauth-callback'
+      redirect_uri: 'http://localhost:4200/oauth-callback'
     })
     .then(response => response.body.access_token)
     .then(access_token =>
