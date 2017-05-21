@@ -4,5 +4,7 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  baseUrl: 'http://localhost:4200',
+  wcaOAuthClientId: '6a8e2bc7d6c590ffa371ed0e54a5bea865251eff256be537a54edefa75dd20b4'
 };

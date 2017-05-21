@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  baseUrl: process.env.BASE_URL,
+  wcaOAuthClientId: process.env.WCA_OAUTH_CLIENT_ID
 };
