@@ -4,6 +4,7 @@ import * as request from 'superagent';
 import * as jsonwebtoken from 'jsonwebtoken';
 
 import { environment } from './environment';
+import { parseWcaUser } from './helpers';
 
 const app = express();
 
@@ -29,7 +30,7 @@ app.get('/oauth-callback', (req, res) => {
         .set('Authorization', `Bearer ${accessToken}`))
     .then(response => response.body.me)
     .then(user => {
-      const token = jsonwebtoken.sign(user, environment.jwtSecret);
+      const token = jsonwebtoken.sign({ user: parseWcaUser(user) }, environment.jwtSecret);
       res.send(`
         <script>
           localStorage.setItem('jwt', '${token}');

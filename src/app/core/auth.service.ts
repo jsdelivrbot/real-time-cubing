@@ -5,6 +5,7 @@ import 'rxjs/add/observable/fromEvent';
 import * as jwtDecode from 'jwt-decode';
 
 import { environment } from '../../environments/environment';
+import { User } from '../models/user.model';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,8 @@ export class AuthService {
       .filter((event: StorageEvent) => event.key === 'jwt')
       .map((event: StorageEvent) => event.newValue)
       .subscribe(token => {
-        console.log(jwtDecode(token));
+        const user: User = jwtDecode(token).user;
+        console.log(user);
       });
   }
 }
