@@ -10,6 +10,10 @@ export class AppComponent {
   constructor(private auth: AuthService) { }
 
   signInWithWCA() {
-    this.auth.openOAuthPopup();
+    this.auth.openWcaOAuthPopup();
+  }
+
+  signOut() {
+    this.auth.signOut();
   }
 }
