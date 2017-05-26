@@ -6,7 +6,6 @@ import { HttpModule } from '@angular/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MaterialModule } from './material/material.module';
 import { CoreModule } from './core/core.module';
 import { HomeModule } from './home/home.module';
 
@@ -20,7 +19,6 @@ import { HomeModule } from './home/home.module';
     FormsModule,
     HttpModule,
     AppRoutingModule,
-    MaterialModule,
     CoreModule,
     HomeModule
   ],

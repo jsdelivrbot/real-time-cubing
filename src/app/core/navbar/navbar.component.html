@@ -1,0 +1,14 @@
+<md-toolbar color="primary">
+  <span>Real Time Cubing</span>
+  <span class="fill-space"></span>
+  <button md-raised-button color="accent" (click)="signInWithWCA()" *ngIf="!auth.user">
+    Sign In With WCA
+  </button>
+  <div *ngIf="auth.user">
+    <span>{{auth.user.name}}</span>
+    <img [src]="auth.user.avatar.thumbUrl" class="user-avatar">
+    <button md-raised-button color="accent" (click)="signOut()">
+      Sign Out
+    </button>
+  </div>
+</md-toolbar>
