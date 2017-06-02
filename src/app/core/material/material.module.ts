@@ -2,12 +2,16 @@ import { NgModule } from '@angular/core';
 
 import {
   MdButtonModule,
-  MdToolbarModule
+  MdToolbarModule,
+  MdIconModule,
+  MdMenuModule
 } from '@angular/material';
 
 const MATERIAL_MODULES = [
   MdButtonModule,
-  MdToolbarModule
+  MdToolbarModule,
+  MdIconModule,
+  MdMenuModule
 ];
 
 @NgModule({

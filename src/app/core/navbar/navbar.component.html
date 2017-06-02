@@ -1,14 +1,19 @@
 <md-toolbar color="primary">
-  <span>Real Time Cubing</span>
+
+  <md-menu #appMenu="mdMenu">
+    <button md-menu-item (click)="signOut()">Sign Out</button>
+  </md-menu>
+  <button md-icon-button [mdMenuTriggerFor]="appMenu" *ngIf="auth.user">
+    <md-icon>more_vert</md-icon>
+  </button>
+  <span class="fill-space"></span>
+  <h2>Real Time Cubing</h2>
   <span class="fill-space"></span>
   <button md-raised-button color="accent" (click)="signInWithWCA()" *ngIf="!auth.user">
     Sign In With WCA
   </button>
-  <div *ngIf="auth.user">
-    <span>{{auth.user.name}}</span>
+  <ng-template [ngIf]="auth.user">
+    <span class="name">{{auth.user.name}}</span>
     <img [src]="auth.user.avatar.thumbUrl" class="user-avatar">
-    <button md-raised-button color="accent" (click)="signOut()">
-      Sign Out
-    </button>
-  </div>
+  </ng-template>
 </md-toolbar>
