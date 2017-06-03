@@ -4,14 +4,20 @@ import {
   MdButtonModule,
   MdToolbarModule,
   MdIconModule,
-  MdMenuModule
+  MdMenuModule,
+  MdInputModule,
+  MdCheckboxModule,
+  MdTooltipModule
 } from '@angular/material';
 
 const MATERIAL_MODULES = [
   MdButtonModule,
   MdToolbarModule,
   MdIconModule,
-  MdMenuModule
+  MdMenuModule,
+  MdInputModule,
+  MdCheckboxModule,
+  MdTooltipModule
 ];
 
 @NgModule({

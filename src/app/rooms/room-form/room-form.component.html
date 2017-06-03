@@ -1,0 +1,14 @@
+<form [formGroup]="roomForm" novalidate>
+  <div>
+    <md-input-container>
+      <input mdInput placeholder="Name" formControlName="name">
+    </md-input-container>
+  </div>
+  <div>
+    <md-checkbox formControlName="public">Public</md-checkbox>
+  </div>
+  <div>
+    <app-event-picker formControlName="event"></app-event-picker>
+  </div>
+  <button md-raised-button color="primary" (click)="onCreate()">Create</button>
+</form>

@@ -1,0 +1,5 @@
+<md-icon *ngFor="let event of events"
+         fontSet="cubing-icon" [fontIcon]="event.icon"
+         [class.selected]="event == selectedEvent" (click)="select(event)"
+         [mdTooltip]="event.name" mdTooltipPosition="above">
+</md-icon>

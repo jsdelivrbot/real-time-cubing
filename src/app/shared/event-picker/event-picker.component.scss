@@ -1,0 +1,20 @@
+md-icon {
+  font-size: 1.8em;
+  opacity: 0.3;
+
+  &.selected {
+    opacity: 1;
+  }
+
+  &:not(:first-child) {
+    margin-left: 0.15em;
+  }
+
+  &:not(:last-child) {
+    margin-right: 0.15em;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}
