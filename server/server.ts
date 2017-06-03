@@ -1,17 +1,27 @@
-import * as express from 'express';
 import * as path from 'path';
+import * as http from 'http';
+import * as express from 'express';
 import * as request from 'superagent';
 import * as jsonwebtoken from 'jsonwebtoken';
+import * as socketIo from 'socket.io';
+import * as socketIoJwt from 'socketio-jwt';
 
 import { environment } from './environment';
 import { parseWcaUser } from './helpers';
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
 const staticFilesPath = path.resolve(__dirname, '../dist');
 const indexHtmlPath = path.resolve(staticFilesPath, 'index.html');
 
 app.use(express.static(staticFilesPath));
+
+io.use(socketIoJwt.authorize({
+  secret: environment.jwtSecret,
+  handshake: true
+}));
 
 app.get('/oauth-callback', (req, res) => {
   request
@@ -44,4 +54,6 @@ app.get('/*', (req, res) => {
   res.sendFile(indexHtmlPath);
 });
 
-app.listen(environment.port, () => console.log(`App running on port ${environment.port}`));
+io.on('connection', socket => { });
+
+server.listen(environment.port, () => console.log(`App running on port ${environment.port}`));

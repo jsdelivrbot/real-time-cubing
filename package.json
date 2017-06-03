@@ -44,6 +44,9 @@
     "jwt-decode": "^2.2.0",
     "normalize.css": "^7.0.0",
     "rxjs": "^5.1.0",
+    "socket.io": "^2.0.2",
+    "socket.io-client": "^2.0.2",
+    "socketio-jwt": "^4.5.0",
     "superagent": "^3.5.2",
     "zone.js": "^0.8.4"
   },
@@ -55,6 +58,8 @@
     "@types/jsonwebtoken": "^7.2.0",
     "@types/jwt-decode": "^1.4.28",
     "@types/node": "~6.0.60",
+    "@types/socket.io": "^1.4.29",
+    "@types/socket.io-client": "^1.4.29",
     "@types/superagent": "^2.0.36",
     "codelyzer": "~2.0.0",
     "jasmine-core": "~2.5.2",

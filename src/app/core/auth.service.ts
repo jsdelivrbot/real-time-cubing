@@ -6,20 +6,21 @@ import * as jwtDecode from 'jwt-decode';
 
 import { environment } from '../../environments/environment';
 import { User } from '../models/user.model';
+import { SocketService } from './socket.service';
 
 @Injectable()
 export class AuthService {
   user: User;
 
-  constructor() {
+  constructor(private socket: SocketService) {
     const currentJwt = localStorage.getItem('jwt');
     if (currentJwt) {
-      this.extractUserFromToken(currentJwt);
+      this.onToken(currentJwt);
     }
     Observable.fromEvent(window, 'storage')
       .filter((event: StorageEvent) => event.key === 'jwt')
       .map((event: StorageEvent) => event.newValue)
-      .subscribe(jwt => this.extractUserFromToken(jwt));
+      .subscribe(jwt => this.onToken(jwt));
   }
 
   openWcaOAuthPopup(): void {
@@ -29,15 +30,20 @@ export class AuthService {
     params.set('scopes', 'public');
     params.set('redirect_uri', `${environment.baseUrl}/oauth-callback`);
     const url = `https://www.worldcubeassociation.org/oauth/authorize?${params.toString()}`;
-    const popup: Window = window.open(url, '', 'width=600,height=400');
-  }
-
-  extractUserFromToken(jwt: string): void {
-    this.user = jwtDecode(jwt).user;
+    window.open(url, '', 'width=600,height=400');
   }
 
   signOut(): void {
     localStorage.removeItem('jwt');
     this.user = null;
+    this.socket.disconnect();
+  }
+
+  /**
+   * Extracts the user data from the given token and establishes websocket connection.
+   */
+  private onToken(jwt: string): void {
+    this.user = jwtDecode(jwt).user;
+    this.socket.connect(jwt);
   }
 }

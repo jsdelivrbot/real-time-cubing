@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { MaterialModule } from './material/material.module';
 import { AuthService } from './auth.service';
+import { SocketService } from './socket.service';
 import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
@@ -11,7 +12,10 @@ import { NavbarComponent } from './navbar/navbar.component';
     MaterialModule
   ],
   declarations: [NavbarComponent],
-  providers: [AuthService],
+  providers: [
+    AuthService,
+    SocketService
+  ],
   exports: [
     MaterialModule,
     NavbarComponent
