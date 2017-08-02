@@ -12,7 +12,7 @@ import { SocketService } from './socket.service';
 export class AuthService {
   user: User;
 
-  constructor(private socket: SocketService) {
+  constructor(private socketService: SocketService) {
     const currentJwt = localStorage.getItem('jwt');
     if (currentJwt) {
       this.onToken(currentJwt);
@@ -36,7 +36,7 @@ export class AuthService {
   signOut(): void {
     localStorage.removeItem('jwt');
     this.user = null;
-    this.socket.disconnect();
+    this.socketService.disconnect();
   }
 
   /**
@@ -44,6 +44,6 @@ export class AuthService {
    */
   private onToken(jwt: string): void {
     this.user = jwtDecode(jwt).user;
-    this.socket.connect(jwt);
+    this.socketService.connect(jwt);
   }
 }

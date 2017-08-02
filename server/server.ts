@@ -54,6 +54,16 @@ app.get('/*', (req, res) => {
   res.sendFile(indexHtmlPath);
 });
 
-io.on('connection', socket => { });
+const rooms = [];
+
+io.on('connection', socket => {
+  // socket.emit('initialData', { rooms });
+
+  socket.on('createRoom', room => {
+    rooms.push(room);
+    socket.join(room.name);
+    socket.broadcast.emit('newRoom', room);
+  });
+});
 
 server.listen(environment.port, () => console.log(`App running on port ${environment.port}`));

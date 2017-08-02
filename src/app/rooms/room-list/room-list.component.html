@@ -1,4 +1,6 @@
 <h3>Room List</h3>
 
+<span *ngFor="let room of roomService.rooms">{{room.name}}</span>
+
 <h3>New Room</h3>
-<app-room-form></app-room-form>
+<app-room-form (create)="onCreateRoom($event)"></app-room-form>

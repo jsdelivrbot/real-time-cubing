@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { AuthService } from '../../core/auth.service';
@@ -11,6 +11,7 @@ import { wcaEvents } from '../../models/wca-event.model';
   styleUrls: ['./room-form.component.scss']
 })
 export class RoomFormComponent {
+  @Output() create = new EventEmitter();
   roomForm: FormGroup;
 
   constructor(private auth: AuthService, private formBuilder: FormBuilder) {
@@ -24,6 +25,6 @@ export class RoomFormComponent {
   onCreate() {
     const room: Room = this.roomForm.value;
     room.users = [this.auth.user];
-    console.log(room);
+    this.create.emit(room);
   }
 }
