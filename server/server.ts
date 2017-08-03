@@ -57,7 +57,7 @@ app.get('/*', (req, res) => {
 const rooms = [];
 
 io.on('connection', socket => {
-  // socket.emit('initialData', { rooms });
+  socket.emit('initialRooms', rooms);
 
   socket.on('createRoom', room => {
     rooms.push(room);

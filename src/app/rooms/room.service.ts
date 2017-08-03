@@ -10,9 +10,8 @@ export class RoomService {
 
   constructor(private socketService: SocketService) {
     this.socketService.onSocket.subscribe(socket => {
-      socket.on('newRoom', room => {
-        this.rooms.push(room);
-      });
+      socket.on('initialRooms', (rooms: Room[]) => this.rooms = rooms);
+      socket.on('newRoom', (room: Room) => this.rooms.push(room));
     });
   }
 
