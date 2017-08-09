@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import * as jwtDecode from 'jwt-decode';
@@ -12,7 +13,7 @@ import { SocketService } from './socket.service';
 export class AuthService {
   user: User;
 
-  constructor(private socketService: SocketService) {
+  constructor(private socketService: SocketService, private router: Router) {
     const currentJwt = localStorage.getItem('jwt');
     if (currentJwt) {
       this.onToken(currentJwt);
@@ -37,6 +38,7 @@ export class AuthService {
     localStorage.removeItem('jwt');
     this.user = null;
     this.socketService.disconnect();
+    this.router.navigate(['']);
   }
 
   /**
@@ -45,5 +47,6 @@ export class AuthService {
   private onToken(jwt: string): void {
     this.user = jwtDecode(jwt).user;
     this.socketService.connect(jwt);
+    this.router.navigate(['/rooms']);
   }
 }

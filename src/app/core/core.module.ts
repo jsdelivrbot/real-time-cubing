@@ -5,6 +5,7 @@ import { MaterialModule } from '../material/material.module';
 import { AuthService } from './auth.service';
 import { SocketService } from './socket.service';
 import { NavbarComponent } from './navbar/navbar.component';
+import { AuthGuard } from './auth-guard.service';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { NavbarComponent } from './navbar/navbar.component';
   declarations: [NavbarComponent],
   providers: [
     AuthService,
-    SocketService
+    SocketService,
+    AuthGuard
   ],
   exports: [
     NavbarComponent
