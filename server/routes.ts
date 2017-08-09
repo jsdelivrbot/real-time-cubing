@@ -20,9 +20,10 @@ export function configureRoutes(app, db) {
         request
           .get('https://www.worldcubeassociation.org/api/v0/me')
           .set('Authorization', `Bearer ${accessToken}`))
-      .then(response => response.body.me)
-      .then(user => {
-        const token = jsonwebtoken.sign({ user: parseWcaUser(user) }, environment.jwtSecret);
+      .then(response => parseWcaUser(response.body.me))
+      .then(user => db.collection('users').findOneAndReplace({ id: user.id }, user, { upsert: true, returnOriginal: false }))
+      .then(({ value: user }) => {
+        const token = jsonwebtoken.sign({ user }, environment.jwtSecret);
         res.send(`
           <script>
             localStorage.setItem('jwt', '${token}');
