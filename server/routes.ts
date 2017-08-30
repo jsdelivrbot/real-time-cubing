@@ -4,7 +4,7 @@ import * as jsonwebtoken from 'jsonwebtoken';
 import { environment } from './environment';
 import { parseWcaUser } from './helpers';
 
-export function configureRoutes(app, db) {
+export function configureRoutes(app, io, db) {
   app.get('/oauth-callback', (req, res) => {
     request
       .post('https://www.worldcubeassociation.org/oauth/token')
@@ -23,7 +23,8 @@ export function configureRoutes(app, db) {
       .then(response => parseWcaUser(response.body.me))
       .then(user => db.collection('users').findOneAndReplace({ id: user.id }, user, { upsert: true, returnOriginal: false }))
       .then(({ value: user }) => {
-        const token = jsonwebtoken.sign({ user }, environment.jwtSecret);
+        const data = { user };
+        const token = jsonwebtoken.sign(data, environment.jwtSecret);
         res.send(`
           <script>
             localStorage.setItem('jwt', '${token}');
@@ -31,5 +32,16 @@ export function configureRoutes(app, db) {
           </script>
         `);
       });
+  });
+
+  app.post('/api/rooms', (req, res) => {
+    db.collection('rooms').insertOne(req.body).then(({ ops: [room] }) => {
+      io.sockets.emit('newRoom', room);
+      res.json({ room });
+    });
+  });
+
+  app.get('/api/rooms/:id', (req, res) => {
+    /* Get all the room data needed. */
   });
 }

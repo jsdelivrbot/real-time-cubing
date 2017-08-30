@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as http from 'http';
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 import * as mongodb from 'mongodb';
 import * as socketIo from 'socket.io';
 import * as socketIoJwt from 'socketio-jwt';
@@ -16,6 +17,7 @@ const io = socketIo(server);
 const staticFilesPath = path.resolve(__dirname, '../dist');
 const indexHtmlPath = path.resolve(staticFilesPath, 'index.html');
 
+app.use(bodyParser.json());
 app.use(express.static(staticFilesPath));
 
 io.use(socketIoJwt.authorize({
@@ -24,7 +26,7 @@ io.use(socketIoJwt.authorize({
 }));
 
 mongodb.MongoClient.connect(environment.mongodbUri).then(db => {
-  configureRoutes(app, db);
+  configureRoutes(app, io, db);
   configureSockets(io, db);
 
   app.get('/*', (req, res) => {

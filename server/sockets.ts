@@ -5,12 +5,5 @@ export function configureSockets(io, db) {
     db.collection('rooms').find().toArray().then((rooms: Room[]) => {
       socket.emit('initialRooms', rooms);
     });
-
-    socket.on('createRoom', (room: Room) => {
-      db.collection('rooms').insertOne(room).then(() => {
-        socket.join(room.name);
-        socket.broadcast.emit('newRoom', room);
-      });
-    });
   });
 }

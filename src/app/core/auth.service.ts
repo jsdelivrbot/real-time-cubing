@@ -3,6 +3,8 @@ import { URLSearchParams } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/map';
 import * as jwtDecode from 'jwt-decode';
 
 import { environment } from '../../environments/environment';
@@ -45,7 +47,7 @@ export class AuthService {
    * Extracts the user data from the given token and establishes websocket connection.
    */
   private onToken(jwt: string): void {
-    this.user = jwtDecode(jwt).user;
+    this.user = jwtDecode<any>(jwt).user;
     this.socketService.connect(jwt);
     this.router.navigate(['/rooms']);
   }
