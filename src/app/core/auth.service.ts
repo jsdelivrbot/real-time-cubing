@@ -13,6 +13,7 @@ import { SocketService } from './socket.service';
 
 @Injectable()
 export class AuthService {
+  redirectUrl = '/rooms';
   user: User;
 
   constructor(private socketService: SocketService, private router: Router) {
@@ -23,7 +24,10 @@ export class AuthService {
     Observable.fromEvent(window, 'storage')
       .filter((event: StorageEvent) => event.key === 'jwt')
       .map((event: StorageEvent) => event.newValue)
-      .subscribe(jwt => this.onToken(jwt));
+      .subscribe(jwt => {
+        this.onToken(jwt);
+        this.router.navigate([this.redirectUrl]);
+      });
   }
 
   openWcaOAuthPopup(): void {
@@ -49,6 +53,5 @@ export class AuthService {
   private onToken(jwt: string): void {
     this.user = jwtDecode<any>(jwt).user;
     this.socketService.connect(jwt);
-    this.router.navigate(['/rooms']);
   }
 }
