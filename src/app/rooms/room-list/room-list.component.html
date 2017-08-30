@@ -1,6 +1,6 @@
 <md-nav-list>
   <h3 md-subheader>Rooms</h3>
-  <a md-list-item *ngFor="let room of roomService.rooms">
+  <a md-list-item *ngFor="let room of roomService.rooms" [routerLink]="['/rooms', room._id]">
     <md-icon md-list-icon fontSet="cubing-icon" [fontIcon]="room.event.icon"></md-icon>
     <h4 md-line>{{room.name}}</h4>
     <p md-line> {{room.event.name}}</p>
