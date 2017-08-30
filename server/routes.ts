@@ -32,4 +32,4 @@ export function configureRoutes(app, db) {
         `);
       });
   });
-};
+}

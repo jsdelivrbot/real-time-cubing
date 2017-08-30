@@ -6,6 +6,7 @@ import { RoomsRoutingModule } from './rooms-routing.module';
 import { RoomListComponent } from './room-list/room-list.component';
 import { RoomFormComponent } from './room-form/room-form.component';
 import { RoomService } from './room.service';
+import { RoomComponent } from './room/room.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { RoomService } from './room.service';
   ],
   declarations: [
     RoomListComponent,
-    RoomFormComponent
+    RoomFormComponent,
+    RoomComponent
   ],
   providers: [RoomService]
 })
