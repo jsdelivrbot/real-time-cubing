@@ -1,5 +1,6 @@
 import * as request from 'superagent';
 import * as jsonwebtoken from 'jsonwebtoken';
+import { ObjectID } from 'mongodb';
 
 import { environment } from './environment';
 import { parseWcaUser } from './helpers';
@@ -42,6 +43,8 @@ export function configureRoutes(app, io, db) {
   });
 
   app.get('/api/rooms/:id', (req, res) => {
-    /* Get all the room data needed. */
+    db.collection('rooms').findOne({ _id: new ObjectID(req.params.id) }).then(room => {
+      res.json({ room });
+    });
   });
 }
