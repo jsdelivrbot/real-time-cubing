@@ -8,7 +8,7 @@ import { parseWcaUser } from './helpers';
 export function configureRoutes(app, io, db) {
   app.get('/oauth-callback', (req, res) => {
     request
-      .post('https://www.worldcubeassociation.org/oauth/token')
+      .post(`${environment.wcaUrl}/oauth/token`)
       .query({
         client_id: environment.wcaOAuthClientId,
         client_secret: environment.wcaOAuthClientSecret,
@@ -19,7 +19,7 @@ export function configureRoutes(app, io, db) {
       .then(response => response.body.access_token)
       .then(accessToken =>
         request
-          .get('https://www.worldcubeassociation.org/api/v0/me')
+          .get(`${environment.wcaUrl}/api/v0/me`)
           .set('Authorization', `Bearer ${accessToken}`))
       .then(response => parseWcaUser(response.body.me))
       .then(user => db.collection('users').findOneAndReplace({ id: user.id }, user, { upsert: true, returnOriginal: false }))

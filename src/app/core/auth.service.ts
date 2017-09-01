@@ -36,7 +36,7 @@ export class AuthService {
     params.set('client_id', environment.wcaOAuthClientId);
     params.set('scopes', 'public');
     params.set('redirect_uri', `${environment.baseUrl}/oauth-callback`);
-    const url = `https://www.worldcubeassociation.org/oauth/authorize?${params.toString()}`;
+    const url = `${environment.wcaUrl}/oauth/authorize?${params.toString()}`;
     window.open(url, '', 'width=600,height=400');
   }
 

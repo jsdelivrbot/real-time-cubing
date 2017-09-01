@@ -6,5 +6,6 @@
 export const environment = {
   production: false,
   baseUrl: 'http://localhost:4200',
-  wcaOAuthClientId: '6a8e2bc7d6c590ffa371ed0e54a5bea865251eff256be537a54edefa75dd20b4'
+  wcaUrl: 'https://staging.worldcubeassociation.org',
+  wcaOAuthClientId: 'a704ad7af6d96a06fe76ebcb60702df8e10aeab86bcd39ad3a7d6f9751909b0f'
 };
