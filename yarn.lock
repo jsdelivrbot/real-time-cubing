@@ -199,6 +199,10 @@
   version "1.4.30"
   resolved "https://registry.yarnpkg.com/@types/jwt-decode/-/jwt-decode-1.4.30.tgz#151388b3f4420cfac5ef83cec7a4091b1a0eb282"
 
+"@types/lodash@^4.14.74":
+  version "4.14.74"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.74.tgz#ac3bd8db988e7f7038e5d22bd76a7ba13f876168"
+
 "@types/mime@*":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-1.3.1.tgz#2cf42972d0931c1060c7d5fa6627fce6bd876f2f"

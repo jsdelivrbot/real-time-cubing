@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
+import * as _ from 'lodash';
 
 import { SocketService } from '../core/socket.service';
 import { Room } from '../models/room.model';
@@ -14,7 +15,8 @@ export class RoomService {
   constructor(private socketService: SocketService, private http: HttpClient) {
     this.socketService.onSocket.subscribe(socket => {
       socket.on('initialRooms', (rooms: Room[]) => this.rooms = rooms);
-      socket.on('newRoom', (room: Room) => this.rooms.push(room));
+      socket.on('roomCreated', (room: Room) => this.rooms.push(room));
+      socket.on('roomRemoved', (room: Room) => _.remove(this.rooms, room));
     });
   }
 
@@ -30,8 +32,16 @@ export class RoomService {
     this.socketService.socket.emit('joinRoom', { roomId, user });
   }
 
+  leaveRoom(roomId: string, user: User): void {
+    this.socketService.socket.emit('leaveRoom', { roomId, user });
+  }
+
   onUserJoined(): Observable<User> {
     return this.observableFromSocketEvent('userJoined');
+  }
+
+  onUserLeft(): Observable<User> {
+    return this.observableFromSocketEvent('userLeft');
   }
 
   private observableFromSocketEvent(event): Observable<any> {

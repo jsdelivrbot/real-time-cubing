@@ -37,7 +37,7 @@ export function configureRoutes(app, io, db) {
 
   app.post('/api/rooms', (req, res) => {
     db.collection('rooms').insertOne(req.body).then(({ ops: [room] }) => {
-      io.sockets.emit('newRoom', room);
+      io.sockets.emit('roomCreated', room);
       res.json({ room });
     });
   });
