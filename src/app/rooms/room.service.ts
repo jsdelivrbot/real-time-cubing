@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { SocketService } from '../core/socket.service';
 import { Room } from '../models/room.model';
 import { RoomData } from '../models/room-data.model';
+import { User } from '../models/user.model';
 
 @Injectable()
 export class RoomService {
@@ -23,5 +24,9 @@ export class RoomService {
 
   getRoomData(roomId: string): Observable<RoomData> {
     return this.http.get(`/api/rooms/${roomId}`);
+  }
+
+  joinRoom(roomId: string, user: User): void {
+    this.socketService.socket.emit('joinRoom', { roomId, user });
   }
 }
