@@ -22,27 +22,36 @@ export function configureSockets(io, db) {
     });
 
     socket.on('leaveRoom', (data: { roomId: string; user: User; }) => {
-      const idCondition = { _id: new ObjectID(data.roomId) };
       db.collection('rooms')
-        .findOne(idCondition)
-        .then((room: Room) => {
-          _.remove(room.users, data.user);
-          if (room.users.length) {
-            return db.collection('rooms')
-                     .updateOne(idCondition, room)
-                     .then(() => {
-                       socket.leave(data.roomId);
-                       io.to(data.roomId).emit('userLeft', data.user);
-                     });
-          } else {
-            return db.collection('rooms')
-                     .removeOne(idCondition)
-                     .then(() => {
-                       socket.leave(data.roomId);
-                       io.sockets.emit('roomRemoved', room);
-                     });
-          }
-        });
+        .findOne({ _id: new ObjectID(data.roomId) })
+        .then((room: Room) => removeUserFromRoom(data.user, room));
     });
+
+    socket.on('disconnect', () => {
+      /* The `decoded_token` property is added by the `socketio-jwt` lib, so we need to work around the Typescript definition. */
+      const user: User = (socket as any).decoded_token.user;
+      db.collection('rooms')
+        .findOne({ users: { $in: [user] } })
+        .then((room: Room) => removeUserFromRoom(user, room));
+    });
+
+    function removeUserFromRoom(user: User, room: Room) {
+      _.remove(room.users, user);
+      if (room.users.length) {
+        return db.collection('rooms')
+                 .updateOne({ _id: room._id }, room)
+                 .then(() => {
+                   socket.leave(room._id);
+                   io.to(room._id).emit('userLeft', user);
+                 });
+      } else {
+        return db.collection('rooms')
+                 .removeOne({ _id: room._id })
+                 .then(() => {
+                   socket.leave(room._id);
+                   io.sockets.emit('roomRemoved', room);
+                 });
+      }
+    }
   });
 }
