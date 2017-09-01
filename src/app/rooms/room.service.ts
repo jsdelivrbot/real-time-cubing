@@ -29,4 +29,14 @@ export class RoomService {
   joinRoom(roomId: string, user: User): void {
     this.socketService.socket.emit('joinRoom', { roomId, user });
   }
+
+  onUserJoined(): Observable<User> {
+    return this.observableFromSocketEvent('userJoined');
+  }
+
+  private observableFromSocketEvent(event): Observable<any> {
+    return new Observable(observer => {
+      this.socketService.socket.on(event, (data: any) => observer.next(data));
+    });
+  }
 }
