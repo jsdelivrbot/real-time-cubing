@@ -44,7 +44,11 @@ export function configureRoutes(app, io, db) {
 
   app.get('/api/rooms/:id', (req, res) => {
     db.collection('rooms').findOne({ _id: new ObjectID(req.params.id) }).then(room => {
-      res.json({ room });
+      if (!room) {
+        res.status(404).send({ error: 'Room not found.' });
+      } else {
+        res.json({ room });
+      }
     });
   });
 }
