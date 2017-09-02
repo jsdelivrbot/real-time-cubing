@@ -6,6 +6,7 @@ import 'rxjs/add/operator/takeUntil';
 import * as _ from 'lodash';
 
 import { AuthService } from '../../core/auth.service';
+import { Message } from '../../models/message.model';
 import { RoomData } from '../../models/room-data.model';
 import { RoomService } from '../room.service';
 import { User } from '../../models/user.model';
@@ -44,6 +45,11 @@ export class RoomComponent implements OnDestroy, OnInit {
   leave(): void {
     this.roomService.leaveRoom(this.roomData.room._id, this.auth.user);
     this.router.navigate(['/rooms']);
+  }
+
+  sendMessage(messageContent): void {
+    const message: Message = { content: messageContent, userName: this.auth.user.name };
+    this.roomService.sendMessage(message);
   }
 
   ngOnDestroy() {

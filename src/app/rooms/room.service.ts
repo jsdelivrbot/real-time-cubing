@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
 
 import { SocketService } from '../core/socket.service';
+import { Message } from '../models/message.model';
 import { Room } from '../models/room.model';
 import { RoomData } from '../models/room-data.model';
 import { User } from '../models/user.model';
@@ -34,6 +35,10 @@ export class RoomService {
 
   leaveRoom(roomId: string, user: User): void {
     this.socketService.socket.emit('leaveRoom', { roomId, user });
+  }
+
+  sendMessage(message: Message): void {
+    this.socketService.socket.emit('message', message);
   }
 
   onUserJoined(): Observable<User> {

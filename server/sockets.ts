@@ -1,6 +1,7 @@
 import { ObjectID } from 'mongodb';
 import * as _ from 'lodash';
 
+import { Message } from '../src/app/models/message.model';
 import { Room } from '../src/app/models/room.model';
 import { User } from '../src/app/models/user.model';
 
@@ -33,6 +34,11 @@ export function configureSockets(io, db) {
       db.collection('rooms')
         .findOne({ users: { $in: [user] } })
         .then((room: Room) => removeUserFromRoom(user, room));
+    });
+
+    socket.on('message', (message: Message) => {
+      /* TODO: Save to the db. */
+      /* TODO: Emit to users in the room. */
     });
 
     function removeUserFromRoom(user: User, room: Room) {

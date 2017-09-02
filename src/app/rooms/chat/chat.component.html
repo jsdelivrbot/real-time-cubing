@@ -1,0 +1,13 @@
+<md-list class="messages">
+  <md-list-item *ngFor="let message of messages">
+    <span class="user-name">{{message.userName}}: </span><span>{{message.content}}</span>
+  </md-list-item>
+</md-list>
+<form class="chat-form" (ngSubmit)="onSubmit()">
+  <md-form-field>
+    <input type="text" mdInput [(ngModel)]="messageContent" name="messageContent">
+  </md-form-field>
+  <button md-icon-button>
+    <md-icon>send</md-icon>
+  </button>
+</form>

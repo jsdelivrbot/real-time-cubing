@@ -8,6 +8,7 @@ import { RoomFormComponent } from './room-form/room-form.component';
 import { RoomService } from './room.service';
 import { RoomComponent } from './room/room.component';
 import { RoomDataResolver } from './room-data-resolver.service';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   imports: [
@@ -18,7 +19,8 @@ import { RoomDataResolver } from './room-data-resolver.service';
   declarations: [
     RoomListComponent,
     RoomFormComponent,
-    RoomComponent
+    RoomComponent,
+    ChatComponent
   ],
   providers: [RoomService, RoomDataResolver]
 })
