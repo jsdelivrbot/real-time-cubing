@@ -1,15 +1,19 @@
 import { ObjectID } from 'mongodb';
 import * as _ from 'lodash';
 
+import { basicRoomFieldsOptions, toBasicRoom } from './helpers';
 import { Message } from '../src/app/models/message.model';
 import { Room, RoomExtended } from '../src/app/models/room.model';
 import { User } from '../src/app/models/user.model';
 
 export function configureSockets(io, db) {
   io.on('connection', (socket: SocketIO.Socket) => {
-    db.collection('rooms').find().toArray().then((rooms: Room[]) => {
-      socket.emit('initialRooms', rooms);
-    });
+    db.collection('rooms')
+      .find({}, basicRoomFieldsOptions)
+      .toArray()
+      .then((rooms: Room[]) => {
+        socket.emit('initialRooms', rooms);
+      });
 
     socket.on('joinRoom', (data: { roomId: string; user: User; }) => {
       db.collection('rooms')
@@ -55,7 +59,7 @@ export function configureSockets(io, db) {
                  .removeOne({ _id: room._id })
                  .then(() => {
                    socket.leave(room._id);
-                   io.sockets.emit('roomRemoved', room);
+                   io.sockets.emit('roomRemoved', toBasicRoom(room));
                  });
       }
     }
