@@ -7,7 +7,7 @@ import { RoomListComponent } from './room-list/room-list.component';
 import { RoomFormComponent } from './room-form/room-form.component';
 import { RoomService } from './room.service';
 import { RoomComponent } from './room/room.component';
-import { RoomDataResolver } from './room-data-resolver.service';
+import { RoomResolver } from './room-resolver.service';
 import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
@@ -22,6 +22,6 @@ import { ChatComponent } from './chat/chat.component';
     RoomComponent,
     ChatComponent
   ],
-  providers: [RoomService, RoomDataResolver]
+  providers: [RoomService, RoomResolver]
 })
 export class RoomsModule { }

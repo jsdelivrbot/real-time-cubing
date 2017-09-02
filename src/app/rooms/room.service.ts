@@ -24,7 +24,7 @@ export class RoomService {
     return this.http.post('/api/rooms', room);
   }
 
-  getRoomData(roomId: string): Observable<Room> {
+  getRoom(roomId: string): Observable<Room> {
     return this.http.get(`/api/rooms/${roomId}`);
   }
 

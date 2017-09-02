@@ -1,4 +1,4 @@
-<form [formGroup]="roomForm" novalidate>
+<form [formGroup]="roomForm" (ngSubmit)="onCreate()" novalidate>
   <div>
     <md-input-container>
       <input mdInput placeholder="Name" formControlName="name">
@@ -10,5 +10,5 @@
   <div>
     <app-event-picker formControlName="event"></app-event-picker>
   </div>
-  <button md-raised-button color="primary" (click)="onCreate()">Create</button>
+  <button md-raised-button color="primary">Create</button>
 </form>
