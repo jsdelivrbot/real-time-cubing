@@ -36,8 +36,8 @@ export class RoomService {
     this.socketService.socket.emit('leaveRoom', { roomId, user });
   }
 
-  sendMessage(message: Message): void {
-    this.socketService.socket.emit('message', message);
+  sendMessage(roomId: string, message: Message): void {
+    this.socketService.socket.emit('message', { roomId, message });
   }
 
   onUserJoined(): Observable<User> {
@@ -46,6 +46,10 @@ export class RoomService {
 
   onUserLeft(): Observable<User> {
     return this.observableFromSocketEvent('userLeft');
+  }
+
+  onMessage(): Observable<Message> {
+    return this.observableFromSocketEvent('message');
   }
 
   private observableFromSocketEvent(event): Observable<any> {

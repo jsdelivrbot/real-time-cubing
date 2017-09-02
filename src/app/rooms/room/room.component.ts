@@ -31,6 +31,7 @@ export class RoomComponent implements OnDestroy, OnInit {
     this.route.data.subscribe((data: { room: Room }) => {
       this.room = data.room;
       this.roomService.joinRoom(this.room._id, this.auth.user);
+      this.room.users.push(this.auth.user);
     });
 
     this.roomService.onUserJoined()
@@ -40,6 +41,10 @@ export class RoomComponent implements OnDestroy, OnInit {
     this.roomService.onUserLeft()
         .takeUntil(this.ngUnsubscribe)
         .subscribe((user: User) => _.remove(this.room.users, user));
+
+    this.roomService.onMessage()
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((message: Message) => this.room.messages.push(message));
   }
 
   leave(): void {
@@ -49,8 +54,8 @@ export class RoomComponent implements OnDestroy, OnInit {
 
   sendMessage(messageContent): void {
     const message: Message = { content: messageContent, userName: this.auth.user.name };
+    this.roomService.sendMessage(this.room._id, message);
     this.room.messages.push(message);
-    this.roomService.sendMessage(message);
   }
 
   ngOnDestroy() {

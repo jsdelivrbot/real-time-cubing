@@ -21,7 +21,7 @@ export function configureSockets(io, db) {
         .then(({ modifiedCount }) => {
           if (modifiedCount) {
             socket.join(data.roomId);
-            io.to(data.roomId).emit('userJoined', data.user);
+            socket.broadcast.to(data.roomId).emit('userJoined', data.user);
           }
         });
     });
@@ -40,12 +40,16 @@ export function configureSockets(io, db) {
         .then((room: Room) => removeUserFromRoom(user, room));
     });
 
-    socket.on('message', (message: Message) => {
-      /* TODO: Save to the db. */
-      /* TODO: Emit to users in the room. */
+    socket.on('message', (data: { roomId: string, message: Message }) => {
+      db.collection('rooms')
+        .updateOne({ _id: new ObjectID(data.roomId) }, { $push: { messages: data.message } })
+        .then(() => {
+          socket.broadcast.to(data.roomId).emit('message', data.message);
+        });
     });
 
     function removeUserFromRoom(user: User, room: Room) {
+      /* Note room always comes from the database, so the _id field is already an ObjectID. */
       _.remove(room.users, user);
       if (room.users.length) {
         return db.collection('rooms')
