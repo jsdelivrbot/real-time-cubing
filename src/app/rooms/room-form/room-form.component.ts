@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 import { AuthService } from '../../core/auth.service';
-import { Room } from '../../models/room.model';
+import { SimplifiedRoom } from '../../models/room.model';
 import { wcaEvents } from '../../models/wca-event.model';
 
 @Component({
@@ -23,7 +23,7 @@ export class RoomFormComponent {
   }
 
   onCreate() {
-    const room: Room = this.roomForm.value;
+    const room: SimplifiedRoom = this.roomForm.value;
     this.create.emit(room);
   }
 }

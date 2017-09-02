@@ -5,26 +5,26 @@ import * as _ from 'lodash';
 
 import { SocketService } from '../core/socket.service';
 import { Message } from '../models/message.model';
-import { Room, RoomExtended } from '../models/room.model';
+import { SimplifiedRoom, Room } from '../models/room.model';
 import { User } from '../models/user.model';
 
 @Injectable()
 export class RoomService {
-  rooms: Room[] = [];
+  rooms: SimplifiedRoom[] = [];
 
   constructor(private socketService: SocketService, private http: HttpClient) {
     this.socketService.onSocket.subscribe(socket => {
-      socket.on('initialRooms', (rooms: Room[]) => this.rooms = rooms);
-      socket.on('roomCreated', (room: Room) => this.rooms.push(room));
-      socket.on('roomRemoved', (room: Room) => _.remove(this.rooms, room));
+      socket.on('initialRooms', (rooms: SimplifiedRoom[]) => this.rooms = rooms);
+      socket.on('roomCreated', (room: SimplifiedRoom) => this.rooms.push(room));
+      socket.on('roomRemoved', (room: SimplifiedRoom) => _.remove(this.rooms, room));
     });
   }
 
-  createRoom(room: Room): Observable<Room> {
+  createRoom(room: SimplifiedRoom): Observable<SimplifiedRoom> {
     return this.http.post('/api/rooms', room);
   }
 
-  getRoomData(roomId: string): Observable<RoomExtended> {
+  getRoomData(roomId: string): Observable<Room> {
     return this.http.get(`/api/rooms/${roomId}`);
   }
 

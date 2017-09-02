@@ -1,17 +1,17 @@
 import { ObjectID } from 'mongodb';
 import * as _ from 'lodash';
 
-import { basicRoomFieldsOptions, toBasicRoom } from './helpers';
+import { simplifiedRoomFieldsOptions, toSimplifiedRoom } from './helpers';
 import { Message } from '../src/app/models/message.model';
-import { Room, RoomExtended } from '../src/app/models/room.model';
+import { SimplifiedRoom, Room } from '../src/app/models/room.model';
 import { User } from '../src/app/models/user.model';
 
 export function configureSockets(io, db) {
   io.on('connection', (socket: SocketIO.Socket) => {
     db.collection('rooms')
-      .find({}, basicRoomFieldsOptions)
+      .find({}, simplifiedRoomFieldsOptions)
       .toArray()
-      .then((rooms: Room[]) => {
+      .then((rooms: SimplifiedRoom[]) => {
         socket.emit('initialRooms', rooms);
       });
 
@@ -29,7 +29,7 @@ export function configureSockets(io, db) {
     socket.on('leaveRoom', (data: { roomId: string; user: User; }) => {
       db.collection('rooms')
         .findOne({ _id: new ObjectID(data.roomId) })
-        .then((room: RoomExtended) => removeUserFromRoom(data.user, room));
+        .then((room: Room) => removeUserFromRoom(data.user, room));
     });
 
     socket.on('disconnect', () => {
@@ -37,7 +37,7 @@ export function configureSockets(io, db) {
       const user: User = (socket as any).decoded_token.user;
       db.collection('rooms')
         .findOne({ users: { $in: [user] } })
-        .then((room: RoomExtended) => removeUserFromRoom(user, room));
+        .then((room: Room) => removeUserFromRoom(user, room));
     });
 
     socket.on('message', (message: Message) => {
@@ -45,7 +45,7 @@ export function configureSockets(io, db) {
       /* TODO: Emit to users in the room. */
     });
 
-    function removeUserFromRoom(user: User, room: RoomExtended) {
+    function removeUserFromRoom(user: User, room: Room) {
       _.remove(room.users, user);
       if (room.users.length) {
         return db.collection('rooms')
@@ -59,7 +59,7 @@ export function configureSockets(io, db) {
                  .removeOne({ _id: room._id })
                  .then(() => {
                    socket.leave(room._id);
-                   io.sockets.emit('roomRemoved', toBasicRoom(room));
+                   io.sockets.emit('roomRemoved', toSimplifiedRoom(room));
                  });
       }
     }

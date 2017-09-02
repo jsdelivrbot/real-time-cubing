@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 
 import { AuthService } from '../../core/auth.service';
 import { Message } from '../../models/message.model';
-import { RoomExtended } from '../../models/room.model';
+import { Room } from '../../models/room.model';
 import { RoomService } from '../room.service';
 import { User } from '../../models/user.model';
 
@@ -17,7 +17,7 @@ import { User } from '../../models/user.model';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnDestroy, OnInit {
-  room: RoomExtended;
+  room: Room;
   private ngUnsubscribe = new Subject<void>();
 
   constructor(
@@ -28,7 +28,7 @@ export class RoomComponent implements OnDestroy, OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.data.subscribe((data: { room: RoomExtended }) => {
+    this.route.data.subscribe((data: { room: Room }) => {
       this.room = data.room;
       this.roomService.joinRoom(this.room._id, this.auth.user);
     });
