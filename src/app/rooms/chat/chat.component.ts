@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import * as _ from 'lodash';
 
 import { Message } from '../../models/message.model';
 
@@ -15,8 +16,9 @@ export class ChatComponent {
   constructor() { }
 
   onSubmit(): void {
-    if (this.messageContent) {
-      this.onMessage.emit(this.messageContent);
+    const messageContent = _.trim(this.messageContent);
+    if (messageContent) {
+      this.onMessage.emit(messageContent);
       this.messageContent = '';
     }
   }
