@@ -24,7 +24,6 @@ export class RoomFormComponent {
 
   onCreate() {
     const room: Room = this.roomForm.value;
-    room.users = [];
     this.create.emit(room);
   }
 }

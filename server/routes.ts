@@ -1,6 +1,7 @@
 import * as request from 'superagent';
 import * as jsonwebtoken from 'jsonwebtoken';
 import { ObjectID } from 'mongodb';
+import * as _ from 'lodash';
 
 import { environment } from './environment';
 import { parseWcaUser } from './helpers';
@@ -36,9 +37,10 @@ export function configureRoutes(app, io, db) {
   });
 
   app.post('/api/rooms', (req, res) => {
-    db.collection('rooms').insertOne(req.body).then(({ ops: [room] }) => {
+    const newRoom = _.extend(req.body, { users: [], messages: [] });
+    db.collection('rooms').insertOne(newRoom).then(({ ops: [room] }) => {
       io.sockets.emit('roomCreated', room);
-      res.json({ room });
+      res.json(room);
     });
   });
 
@@ -47,7 +49,7 @@ export function configureRoutes(app, io, db) {
       if (!room) {
         res.status(404).send({ error: 'Room not found.' });
       } else {
-        res.json({ room });
+        res.json(room);
       }
     });
   });

@@ -2,7 +2,7 @@ import { ObjectID } from 'mongodb';
 import * as _ from 'lodash';
 
 import { Message } from '../src/app/models/message.model';
-import { Room } from '../src/app/models/room.model';
+import { Room, RoomExtended } from '../src/app/models/room.model';
 import { User } from '../src/app/models/user.model';
 
 export function configureSockets(io, db) {
@@ -25,7 +25,7 @@ export function configureSockets(io, db) {
     socket.on('leaveRoom', (data: { roomId: string; user: User; }) => {
       db.collection('rooms')
         .findOne({ _id: new ObjectID(data.roomId) })
-        .then((room: Room) => removeUserFromRoom(data.user, room));
+        .then((room: RoomExtended) => removeUserFromRoom(data.user, room));
     });
 
     socket.on('disconnect', () => {
@@ -33,7 +33,7 @@ export function configureSockets(io, db) {
       const user: User = (socket as any).decoded_token.user;
       db.collection('rooms')
         .findOne({ users: { $in: [user] } })
-        .then((room: Room) => removeUserFromRoom(user, room));
+        .then((room: RoomExtended) => removeUserFromRoom(user, room));
     });
 
     socket.on('message', (message: Message) => {
@@ -41,7 +41,7 @@ export function configureSockets(io, db) {
       /* TODO: Emit to users in the room. */
     });
 
-    function removeUserFromRoom(user: User, room: Room) {
+    function removeUserFromRoom(user: User, room: RoomExtended) {
       _.remove(room.users, user);
       if (room.users.length) {
         return db.collection('rooms')

@@ -1,2 +1,2 @@
 <button md-raised-button (click)="leave()">Leave</button>
-<app-chat (onMessage)="sendMessage($event)"></app-chat>
+<app-chat [messages]="room.messages" (onMessage)="sendMessage($event)"></app-chat>

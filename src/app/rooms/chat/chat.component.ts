@@ -8,8 +8,7 @@ import { Message } from '../../models/message.model';
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent {
-  // @Input() messages: Message[];
-  messages: Message[] = [{ userName: 'Jonatan Kłosko', content: 'Hiya' }, { userName: 'Jeremy Fleischman', content: 'What\'s up?' }];
+  @Input() messages: Message[];
   @Output() onMessage = new EventEmitter<string>();
   messageContent = '';
 

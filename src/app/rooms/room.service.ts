@@ -5,8 +5,7 @@ import * as _ from 'lodash';
 
 import { SocketService } from '../core/socket.service';
 import { Message } from '../models/message.model';
-import { Room } from '../models/room.model';
-import { RoomData } from '../models/room-data.model';
+import { Room, RoomExtended } from '../models/room.model';
 import { User } from '../models/user.model';
 
 @Injectable()
@@ -22,10 +21,10 @@ export class RoomService {
   }
 
   createRoom(room: Room): Observable<Room> {
-    return this.http.post('/api/rooms', room).map((data: any) => data.room);
+    return this.http.post('/api/rooms', room);
   }
 
-  getRoomData(roomId: string): Observable<RoomData> {
+  getRoomData(roomId: string): Observable<RoomExtended> {
     return this.http.get(`/api/rooms/${roomId}`);
   }
 

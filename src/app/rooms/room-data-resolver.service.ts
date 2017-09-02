@@ -5,13 +5,13 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/empty';
 
 import { RoomService } from './room.service';
-import { RoomData } from '../models/room-data.model';
+import { RoomExtended } from '../models/room.model';
 
 @Injectable()
-export class RoomDataResolver implements Resolve<RoomData> {
+export class RoomDataResolver implements Resolve<RoomExtended> {
   constructor(private roomService: RoomService, private router: Router) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RoomData> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<RoomExtended> {
     const roomId = route.paramMap.get('id');
     return this.roomService.getRoomData(roomId).catch(error => {
       this.router.navigate(['/rooms']);

@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 
 import { AuthService } from '../../core/auth.service';
 import { Message } from '../../models/message.model';
-import { RoomData } from '../../models/room-data.model';
+import { RoomExtended } from '../../models/room.model';
 import { RoomService } from '../room.service';
 import { User } from '../../models/user.model';
 
@@ -17,7 +17,7 @@ import { User } from '../../models/user.model';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnDestroy, OnInit {
-  roomData: RoomData;
+  room: RoomExtended;
   private ngUnsubscribe = new Subject<void>();
 
   constructor(
@@ -28,27 +28,28 @@ export class RoomComponent implements OnDestroy, OnInit {
   ) { }
 
   ngOnInit() {
-    this.route.data.subscribe((data: { roomData: RoomData }) => {
-      this.roomData = data.roomData;
-      this.roomService.joinRoom(this.roomData.room._id, this.auth.user);
+    this.route.data.subscribe((data: { room: RoomExtended }) => {
+      this.room = data.room;
+      this.roomService.joinRoom(this.room._id, this.auth.user);
     });
 
     this.roomService.onUserJoined()
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((user: User) => this.roomData.room.users.push(user));
+        .subscribe((user: User) => this.room.users.push(user));
 
     this.roomService.onUserLeft()
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((user: User) => _.remove(this.roomData.room.users, user));
+        .subscribe((user: User) => _.remove(this.room.users, user));
   }
 
   leave(): void {
-    this.roomService.leaveRoom(this.roomData.room._id, this.auth.user);
+    this.roomService.leaveRoom(this.room._id, this.auth.user);
     this.router.navigate(['/rooms']);
   }
 
   sendMessage(messageContent): void {
     const message: Message = { content: messageContent, userName: this.auth.user.name };
+    this.room.messages.push(message);
     this.roomService.sendMessage(message);
   }
 
