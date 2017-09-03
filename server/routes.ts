@@ -41,7 +41,9 @@ export function configureRoutes(app, io, db) {
     const newRoom: Room = _.extend(req.body, { users: [], messages: [] });
     db.collection('rooms').insertOne(newRoom).then(({ ops: [createdRoom] }) => {
       const room: SimplifiedRoom = toSimplifiedRoom(createdRoom);
-      io.sockets.emit('roomCreated', room);
+      if (room.public) {
+        io.sockets.emit('roomCreated', room);
+      }
       res.json(room);
     });
   });

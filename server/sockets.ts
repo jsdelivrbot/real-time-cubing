@@ -9,7 +9,7 @@ import { User } from '../src/app/models/user.model';
 export function configureSockets(io, db) {
   io.on('connection', (socket: SocketIO.Socket) => {
     db.collection('rooms')
-      .find({}, simplifiedRoomFieldsOptions)
+      .find({ public: true }, simplifiedRoomFieldsOptions)
       .toArray()
       .then((rooms: SimplifiedRoom[]) => {
         socket.emit('initialRooms', rooms);
@@ -63,7 +63,9 @@ export function configureSockets(io, db) {
                  .removeOne({ _id: room._id })
                  .then(() => {
                    socket.leave(room._id);
-                   io.sockets.emit('roomRemoved', toSimplifiedRoom(room));
+                   if (room.public) {
+                     io.sockets.emit('roomRemoved', toSimplifiedRoom(room));
+                   }
                  });
       }
     }
