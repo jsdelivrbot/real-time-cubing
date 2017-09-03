@@ -7,6 +7,7 @@ import {
   MdInputModule,
   MdListModule,
   MdMenuModule,
+  MdSelectModule,
   MdToolbarModule,
   MdTooltipModule
 } from '@angular/material';
@@ -18,6 +19,7 @@ const MATERIAL_MODULES = [
   MdInputModule,
   MdListModule,
   MdMenuModule,
+  MdSelectModule,
   MdToolbarModule,
   MdTooltipModule
 ];

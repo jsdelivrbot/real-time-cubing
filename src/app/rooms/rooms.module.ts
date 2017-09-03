@@ -9,6 +9,7 @@ import { RoomService } from './room.service';
 import { RoomComponent } from './room/room.component';
 import { RoomResolver } from './room-resolver.service';
 import { ChatComponent } from './chat/chat.component';
+import { TimerComponent } from './timer/timer.component';
 
 @NgModule({
   imports: [
@@ -20,7 +21,8 @@ import { ChatComponent } from './chat/chat.component';
     RoomListComponent,
     RoomFormComponent,
     RoomComponent,
-    ChatComponent
+    ChatComponent,
+    TimerComponent
   ],
   providers: [RoomService, RoomResolver]
 })
