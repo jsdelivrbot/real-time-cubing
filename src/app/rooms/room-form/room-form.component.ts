@@ -11,7 +11,7 @@ import { wcaEvents } from '../../models/wca-event.model';
   styleUrls: ['./room-form.component.scss']
 })
 export class RoomFormComponent {
-  @Output() create = new EventEmitter();
+  @Output() create = new EventEmitter<SimplifiedRoom>();
   roomForm: FormGroup;
 
   constructor(private auth: AuthService, private formBuilder: FormBuilder) {

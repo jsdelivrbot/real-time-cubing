@@ -9,6 +9,7 @@ import { AuthService } from '../../core/auth.service';
 import { Message } from '../../models/message.model';
 import { Room } from '../../models/room.model';
 import { RoomService } from '../room.service';
+import { Solve } from '../../models/solve.model';
 import { User } from '../../models/user.model';
 
 @Component({
@@ -18,6 +19,8 @@ import { User } from '../../models/user.model';
 })
 export class RoomComponent implements OnDestroy, OnInit {
   room: Room;
+  // scramble: string;
+  scramble = "D' B2 L2 U B2 D2 R2 D2 R2 U2 R B' L2 F' U B2 R B' D2 B' R";
   private ngUnsubscribe = new Subject<void>();
 
   constructor(
@@ -56,6 +59,10 @@ export class RoomComponent implements OnDestroy, OnInit {
     const message: Message = { content: messageContent, userName: this.auth.user.name };
     this.roomService.sendMessage(this.room._id, message);
     this.room.messages.push(message);
+  }
+
+  sendSolve(solve: Solve): void {
+    console.log(solve);
   }
 
   ngOnDestroy() {
