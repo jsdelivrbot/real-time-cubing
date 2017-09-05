@@ -1,14 +1,15 @@
-<span class="mat-subheading-2">Scramble: {{scramble}}</span>
-<button md-icon-button (click)="startInspection()">
-  <md-icon>timer</md-icon>
-</button>
-<!-- <button md-raised-button (click)="startInspection()">Start inspection</button> -->
-<button md-raised-button (click)="start()">Start</button>
-<button md-raised-button (click)="stop()">Stop</button>
+<div *ngIf="scramble && state === SolveState.Initial">
+  <span class="mat-subheading-2">Scramble: {{scramble}}</span>
+  <button md-icon-button (click)="startInspection()">
+    <md-icon>timer</md-icon>
+  </button>
+</div>
 <div class="mat-display-3">{{display}}</div>
-<form (ngSubmit)="submitTime()">
+<button md-raised-button (click)="start()" *ngIf="state === SolveState.Inspection">Start</button>
+<button md-raised-button (click)="stop()" *ngIf="state === SolveState.Solve">Stop</button>
+<form (ngSubmit)="submitTime()" *ngIf="state === SolveState.Finished">
   <md-select name="penatly" [(ngModel)]="penalty">
-    <md-option value="OK">No penalty</md-option>
+    <md-option value="None">No penalty</md-option>
     <md-option value="+2">+2 penalty</md-option>
     <md-option value="DNF">DNF</md-option>
   </md-select>
