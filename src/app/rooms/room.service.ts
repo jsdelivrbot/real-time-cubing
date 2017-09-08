@@ -6,6 +6,7 @@ import * as _ from 'lodash';
 import { SocketService } from '../core/socket.service';
 import { Message } from '../models/message.model';
 import { SimplifiedRoom, Room } from '../models/room.model';
+import { Solve } from '../models/solve.model';
 import { User } from '../models/user.model';
 
 @Injectable()
@@ -40,6 +41,10 @@ export class RoomService {
     this.socketService.socket.emit('message', { roomId, message });
   }
 
+  sendSolve(roomId: string, userId: string, solve: Solve): void {
+    this.socketService.socket.emit('solve', { roomId, userId, solve });
+  }
+
   onUserJoined(): Observable<User> {
     return this.observableFromSocketEvent('userJoined');
   }
@@ -50,6 +55,10 @@ export class RoomService {
 
   onMessage(): Observable<Message> {
     return this.observableFromSocketEvent('message');
+  }
+
+  onSolve(): Observable<{ userId: string, solve: Solve }> {
+    return this.observableFromSocketEvent('solve');
   }
 
   private observableFromSocketEvent(event): Observable<any> {

@@ -8,4 +8,5 @@ export enum SolveState {
 export interface Solve {
   time: number;
   scramble: string;
+  index: number;
 }

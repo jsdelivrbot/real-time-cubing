@@ -48,6 +48,12 @@ export class RoomComponent implements OnDestroy, OnInit {
     this.roomService.onMessage()
         .takeUntil(this.ngUnsubscribe)
         .subscribe((message: Message) => this.room.messages.push(message));
+
+    this.roomService.onSolve()
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((data: { userId: string, solve: Solve }) => {
+          _.merge(this.room.solves, { [data.userId]: [data.solve] });
+        });
   }
 
   leave(): void {
@@ -62,7 +68,9 @@ export class RoomComponent implements OnDestroy, OnInit {
   }
 
   sendSolve(solve: Solve): void {
-    console.log(solve);
+    solve.index = this.room.solveIndex;
+    this.roomService.sendSolve(this.room._id, this.auth.user._id, solve);
+    _.merge(this.room.solves, { [this.auth.user._id]: [solve] });
   }
 
   ngOnDestroy() {

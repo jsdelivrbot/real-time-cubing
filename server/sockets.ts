@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import { simplifiedRoomFieldsOptions, toSimplifiedRoom } from './helpers';
 import { Message } from '../src/app/models/message.model';
 import { SimplifiedRoom, Room } from '../src/app/models/room.model';
+import { Solve } from '../src/app/models/solve.model';
 import { User } from '../src/app/models/user.model';
 
 export function configureSockets(io, db) {
@@ -45,6 +46,14 @@ export function configureSockets(io, db) {
         .updateOne({ _id: new ObjectID(data.roomId) }, { $push: { messages: data.message } })
         .then(() => {
           socket.broadcast.to(data.roomId).emit('message', data.message);
+        });
+    });
+
+    socket.on('solve', (data: { roomId: string, userId: string, solve: Solve }) => {
+      db.collection('rooms')
+        .updateOne({ _id: new ObjectID(data.roomId) }, { $push: { [`solves.${data.userId}`]: data.solve } })
+        .then(() => {
+          socket.broadcast.to(data.roomId).emit('solve', _.pick(data, ['userId', 'solve']));
         });
     });
 

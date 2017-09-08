@@ -1,4 +1,5 @@
 import { Message } from './message.model';
+import { Solve } from './solve.model';
 import { User } from './user.model';
 import { WcaEvent } from './wca-event.model';
 
@@ -12,4 +13,8 @@ export interface SimplifiedRoom {
 export interface Room extends SimplifiedRoom {
   users: User[];
   messages: Message[];
+  solveIndex: number;
+  solves: {
+    [userId: string]: Solve[];
+  };
 }
