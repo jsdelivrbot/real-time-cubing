@@ -1070,7 +1070,7 @@ combined-stream@^1.0.5, combined-stream@~1.0.5:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@2.11.x, commander@~2.11.0:
+commander@2.11.x, commander@^2.3.0, commander@~2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
 
@@ -4894,6 +4894,12 @@ schema-utils@^0.3.0:
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-0.3.0.tgz#f5877222ce3e931edae039f17eb3716e7137f8cf"
   dependencies:
     ajv "^5.0.0"
+
+scrambo@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/scrambo/-/scrambo-0.3.0.tgz#0334b4ef0c7ffcd0b7d85fd1a67d89b0b7fb204f"
+  dependencies:
+    commander "^2.3.0"
 
 script-loader@^0.7.0:
   version "0.7.0"

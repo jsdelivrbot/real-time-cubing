@@ -10,6 +10,7 @@ import { Message } from '../../models/message.model';
 import { Room } from '../../models/room.model';
 import { RoomService } from '../room.service';
 import { Solve } from '../../models/solve.model';
+import { State, UserState } from '../../models/user-state.model';
 import { User } from '../../models/user.model';
 
 @Component({
@@ -35,15 +36,22 @@ export class RoomComponent implements OnDestroy, OnInit {
       this.room = data.room;
       this.roomService.joinRoom(this.room._id, this.auth.user);
       this.room.users.push(this.auth.user);
+      this.room.userStates.push({ userId: this.auth.user._id, state: State.Ready } as UserState);
     });
 
     this.roomService.onUserJoined()
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((user: User) => this.room.users.push(user));
+        .subscribe((user: User) => {
+          this.room.users.push(user);
+          this.room.userStates.push({ userId: user._id, state: State.Ready } as UserState);
+        });
 
     this.roomService.onUserLeft()
         .takeUntil(this.ngUnsubscribe)
-        .subscribe((user: User) => _.remove(this.room.users, user));
+        .subscribe((user: User) => {
+          _.remove(this.room.users, user);
+          _.remove(this.room.userStates, { userId: user._id });
+        });
 
     this.roomService.onMessage()
         .takeUntil(this.ngUnsubscribe)
@@ -53,6 +61,17 @@ export class RoomComponent implements OnDestroy, OnInit {
         .takeUntil(this.ngUnsubscribe)
         .subscribe((data: { userId: string, solve: Solve }) => {
           _.merge(this.room.solves, { [data.userId]: [data.solve] });
+          _.find(this.room.userStates, { userId: data.userId }).state = State.Ready;
+        });
+
+    this.roomService.onScramble()
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((scramble: string) => {
+          this.scramble = scramble;
+          this.room.solveIndex += 1;
+          _(this.room.userStates)
+            .filter({ state: State.Ready })
+            .each((userState: UserState) => userState.state = State.Scrambling);
         });
   }
 
@@ -71,6 +90,7 @@ export class RoomComponent implements OnDestroy, OnInit {
     solve.index = this.room.solveIndex;
     this.roomService.sendSolve(this.room._id, this.auth.user._id, solve);
     _.merge(this.room.solves, { [this.auth.user._id]: [solve] });
+    _.find(this.room.userStates, { userId: this.auth.user._id }).state = State.Ready;
   }
 
   ngOnDestroy() {

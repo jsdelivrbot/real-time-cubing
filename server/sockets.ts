@@ -1,9 +1,10 @@
 import { ObjectID } from 'mongodb';
 import * as _ from 'lodash';
 
-import { simplifiedRoomFieldsOptions, toSimplifiedRoom } from './helpers';
+import { simplifiedRoomFieldsOptions, toSimplifiedRoom, scrambleFor } from './helpers';
 import { Message } from '../src/app/models/message.model';
 import { SimplifiedRoom, Room } from '../src/app/models/room.model';
+import { State, UserState } from '../src/app/models/user-state.model';
 import { Solve } from '../src/app/models/solve.model';
 import { User } from '../src/app/models/user.model';
 
@@ -18,7 +19,12 @@ export function configureSockets(io, db) {
 
     socket.on('joinRoom', (data: { roomId: string; user: User; }) => {
       db.collection('rooms')
-        .updateOne({ _id: new ObjectID(data.roomId) }, { $addToSet: { users: data.user } })
+        .updateOne({ _id: new ObjectID(data.roomId) }, {
+          $addToSet: {
+            users: data.user,
+            userStates: { userId: data.user._id, state: State.Ready }
+          }
+        })
         .then(({ modifiedCount }) => {
           if (modifiedCount) {
             socket.join(data.roomId);
@@ -50,16 +56,32 @@ export function configureSockets(io, db) {
     });
 
     socket.on('solve', (data: { roomId: string, userId: string, solve: Solve }) => {
-      db.collection('rooms')
-        .updateOne({ _id: new ObjectID(data.roomId) }, { $push: { [`solves.${data.userId}`]: data.solve } })
-        .then(() => {
+      db.collection('rooms').findOne({ _id: new ObjectID(data.roomId) })
+        .then((room: Room) => {
+          _.merge(room.solves, { [data.userId]: [data.solve] });
+          _.find(room.userStates, { userId: data.userId }).state = State.Ready;
           socket.broadcast.to(data.roomId).emit('solve', _.pick(data, ['userId', 'solve']));
+          const everyoneReady = _(room.userStates).map('state').difference([State.Ready, State.Spectating]).isEmpty();
+          if (everyoneReady) {
+            room.solveIndex += 1;
+            _(room.userStates)
+              .filter({ state: State.Ready })
+              .each((userState: UserState) => userState.state = State.Scrambling);
+          }
+          return db.collection('rooms')
+            .updateOne({ _id: new ObjectID(data.roomId) }, room)
+            .then(() => {
+              if (everyoneReady) {
+                io.to(room._id).emit('scramble', scrambleFor(room.event.id));
+              }
+            });
         });
     });
 
     function removeUserFromRoom(user: User, room: Room) {
       /* Note room always comes from the database, so the _id field is already an ObjectID. */
       _.remove(room.users, user);
+      _.remove(room.userStates, { userId: user._id });
       if (room.users.length) {
         return db.collection('rooms')
                  .updateOne({ _id: room._id }, room)

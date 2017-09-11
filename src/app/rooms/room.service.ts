@@ -61,6 +61,10 @@ export class RoomService {
     return this.observableFromSocketEvent('solve');
   }
 
+  onScramble(): Observable<string> {
+    return this.observableFromSocketEvent('scramble');
+  }
+
   private observableFromSocketEvent(event): Observable<any> {
     return new Observable(observer => {
       this.socketService.socket.on(event, (data: any) => observer.next(data));

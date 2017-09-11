@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import * as Scrambler from 'scrambo';
 
 import { SimplifiedRoom, Room } from '../src/app/models/room.model';
 import { User } from '../src/app/models/user.model';
@@ -21,4 +22,16 @@ export const simplifiedRoomFieldsOptions = { fields: { _id: 1, name: 1, public: 
 
 export function toSimplifiedRoom(room: Room): SimplifiedRoom {
   return _.pick(room, _.keys(simplifiedRoomFieldsOptions.fields)) as SimplifiedRoom;
+}
+
+/* Scrambler wrapper. */
+const scrambler = new Scrambler();
+const lengthByEventId = { '444': 40, '555': 60, '666': 80, '777': 100, 'minx': 70 };
+export function scrambleFor(eventId) {
+  const scramblerEventId = eventId.replace(/(bf|fm|ft|oh)$/, '');
+  const length = lengthByEventId[scramblerEventId];
+  if (length) {
+    scrambler.length(length);
+  }
+  return scrambler.type(scramblerEventId).get()[0];
 }
