@@ -1,3 +1,4 @@
+<button md-raised-button (click)="newScrambleRequest()" *ngIf="!scramble">New scramble</button>
 <app-timer [scramble]="scramble" (solve)="sendSolve($event)"></app-timer>
 <app-chat [messages]="room.messages" (onMessage)="sendMessage($event)"></app-chat>
 <button md-raised-button (click)="leave()">Leave</button>

@@ -45,6 +45,10 @@ export class RoomService {
     this.socketService.socket.emit('solve', { roomId, userId, solve });
   }
 
+  newScrambleRequest(roomId: string): void {
+    this.socketService.socket.emit('newScrambleRequest', roomId);
+  }
+
   onUserJoined(): Observable<User> {
     return this.observableFromSocketEvent('userJoined');
   }

@@ -20,8 +20,7 @@ import { User } from '../../models/user.model';
 })
 export class RoomComponent implements OnDestroy, OnInit {
   room: Room;
-  // scramble: string;
-  scramble = "D' B2 L2 U B2 D2 R2 D2 R2 U2 R B' L2 F' U B2 R B' D2 B' R";
+  scramble: string;
   private ngUnsubscribe = new Subject<void>();
 
   constructor(
@@ -91,6 +90,10 @@ export class RoomComponent implements OnDestroy, OnInit {
     this.roomService.sendSolve(this.room._id, this.auth.user._id, solve);
     _.merge(this.room.solves, { [this.auth.user._id]: [solve] });
     _.find(this.room.userStates, { userId: this.auth.user._id }).state = State.Ready;
+  }
+
+  newScrambleRequest(): void {
+    this.roomService.newScrambleRequest(this.room._id);
   }
 
   ngOnDestroy() {

@@ -55,6 +55,11 @@ export function configureSockets(io, db) {
         });
     });
 
+    socket.on('newScrambleRequest', (roomId: string) => {
+      db.collection('rooms').findOne({ _id: new ObjectID(roomId) })
+        .then(newScrambleForRoom);
+    });
+
     socket.on('solve', (data: { roomId: string, userId: string, solve: Solve }) => {
       db.collection('rooms').findOne({ _id: new ObjectID(data.roomId) })
         .then((room: Room) => {
@@ -63,20 +68,24 @@ export function configureSockets(io, db) {
           socket.broadcast.to(data.roomId).emit('solve', _.pick(data, ['userId', 'solve']));
           const everyoneReady = _(room.userStates).map('state').difference([State.Ready, State.Spectating]).isEmpty();
           if (everyoneReady) {
-            room.solveIndex += 1;
-            _(room.userStates)
-              .filter({ state: State.Ready })
-              .each((userState: UserState) => userState.state = State.Scrambling);
+            return newScrambleForRoom(room);
+          } else {
+            return db.collection('rooms').updateOne({ _id: new ObjectID(data.roomId) }, room);
           }
-          return db.collection('rooms')
-            .updateOne({ _id: new ObjectID(data.roomId) }, room)
-            .then(() => {
-              if (everyoneReady) {
-                io.to(room._id).emit('scramble', scrambleFor(room.event.id));
-              }
-            });
         });
     });
+
+    function newScrambleForRoom(room: Room) {
+      room.solveIndex += 1;
+      _(room.userStates)
+        .filter({ state: State.Ready })
+        .each((userState: UserState) => userState.state = State.Scrambling);
+      return db.collection('rooms')
+        .updateOne({ _id: new ObjectID(room._id) }, room)
+        .then(() => {
+          io.to(room._id).emit('scramble', scrambleFor(room.event.id));
+        });
+    }
 
     function removeUserFromRoom(user: User, room: Room) {
       /* Note room always comes from the database, so the _id field is already an ObjectID. */
