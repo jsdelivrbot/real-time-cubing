@@ -8,6 +8,7 @@ import { Message } from '../models/message.model';
 import { SimplifiedRoom, Room } from '../models/room.model';
 import { Solve } from '../models/solve.model';
 import { User } from '../models/user.model';
+import { UserState } from '../models/user-state.model';
 
 @Injectable()
 export class RoomService {
@@ -45,6 +46,10 @@ export class RoomService {
     this.socketService.socket.emit('solve', { roomId, solve });
   }
 
+  sendState(roomId: string, userState: UserState): void {
+    this.socketService.socket.emit('stateChange', { roomId, userState });
+  }
+
   newScrambleRequest(roomId: string): void {
     this.socketService.socket.emit('newScrambleRequest', roomId);
   }
@@ -63,6 +68,10 @@ export class RoomService {
 
   onSolve(): Observable<Solve> {
     return this.observableFromSocketEvent('solve');
+  }
+
+  onStateChange(): Observable<UserState> {
+    return this.observableFromSocketEvent('stateChange');
   }
 
   onScramble(): Observable<string> {

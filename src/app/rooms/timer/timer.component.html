@@ -1,13 +1,13 @@
-<div *ngIf="scramble && state === SolveState.Initial">
+<div *ngIf="scramble && state === State.Scrambling">
   <span class="mat-subheading-2">Scramble: {{scramble}}</span>
   <button md-icon-button (click)="startInspection()">
     <md-icon>timer</md-icon>
   </button>
 </div>
 <div class="mat-display-3">{{display}}</div>
-<button md-raised-button (click)="start()" *ngIf="state === SolveState.Inspection">Start</button>
-<button md-raised-button (click)="stop()" *ngIf="state === SolveState.Solve">Stop</button>
-<form (ngSubmit)="submitTime()" *ngIf="state === SolveState.Finished">
+<button md-raised-button (click)="start()" *ngIf="state === State.Inspecting">Start</button>
+<button md-raised-button (click)="stop()" *ngIf="state === State.Solving && !time">Stop</button>
+<form (ngSubmit)="submitTime()" *ngIf="time">
   <md-select name="penatly" [(ngModel)]="penalty">
     <md-option value="None">No penalty</md-option>
     <md-option value="+2">+2 penalty</md-option>

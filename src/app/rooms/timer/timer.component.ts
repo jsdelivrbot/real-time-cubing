@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import * as _ from 'lodash';
 
-import { SolveState, Solve } from '../../models/solve.model';
+import { Solve } from '../../models/solve.model';
+import { State } from '../../models/user-state.model';
 
 @Component({
   selector: 'app-timer',
@@ -11,20 +12,21 @@ import { SolveState, Solve } from '../../models/solve.model';
 export class TimerComponent {
   @Input() scramble: string;
   @Output() solve = new EventEmitter<Solve>();
+  @Output() stateChange = new EventEmitter<State>();
   startTime: number;
   time: number;
   display: string;
   penalty: string;
-  state: SolveState;
+  state: State;
   inspectionTimers: NodeJS.Timer[];
-  SolveState = SolveState;
+  State = State;
 
   constructor() {
     this.reset();
   }
 
   startInspection(): void {
-    this.state = SolveState.Inspection;
+    this.setAndEmitState(State.Inspecting);
     this.display = 'Inspection';
     this.inspectionTimers = [
       setTimeout(() => this.display = 'Inspection 8s!', 8000),
@@ -35,20 +37,20 @@ export class TimerComponent {
   }
 
   start(): void {
-    this.state = SolveState.Solve;
+    this.setAndEmitState(State.Solving);
     this.startTime = performance.now();
     this.display = 'Solving';
     this.inspectionTimers.forEach(timer => clearTimeout(timer));
   }
 
   stop(): void {
-    this.state = SolveState.Finished;
     const timeMiliseconds = (performance.now() - this.startTime);
     this.time = _.floor(timeMiliseconds / 1000, 2);
     this.display = this.time.toString();
   }
 
   submitTime(): void {
+    this.setAndEmitState(State.Ready);
     /* Notify about the time. */
     const solve = { time: this.time, scramble: this.scramble } as Solve;
     this.solve.emit(solve);
@@ -61,6 +63,11 @@ export class TimerComponent {
     this.time = null;
     this.display = '';
     this.penalty = 'None';
-    this.state = SolveState.Initial;
+    this.state = State.Scrambling;
+  }
+
+  private setAndEmitState(state: State) {
+    this.state = state;
+    this.stateChange.emit(state);
   }
 }

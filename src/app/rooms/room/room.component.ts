@@ -63,6 +63,12 @@ export class RoomComponent implements OnDestroy, OnInit {
           _.find(this.room.userStates, { userId: solve.userId }).state = State.Ready;
         });
 
+    this.roomService.onStateChange()
+        .takeUntil(this.ngUnsubscribe)
+        .subscribe((userState: UserState) => {
+          _.find(this.room.userStates, { userId: userState.userId }).state = userState.state;
+        });
+
     this.roomService.onScramble()
         .takeUntil(this.ngUnsubscribe)
         .subscribe((scramble: string) => {
@@ -91,6 +97,12 @@ export class RoomComponent implements OnDestroy, OnInit {
     this.roomService.sendSolve(this.room._id, solve);
     this.room.solves.push(solve);
     _.find(this.room.userStates, { userId: solve.userId }).state = State.Ready;
+  }
+
+  sendState(state: State): void {
+    const userState: UserState = { state, userId: this.auth.user._id };
+    _.find(this.room.userStates, { userId: userState.userId }).state = state;
+    this.roomService.sendState(this.room._id, userState);
   }
 
   newScrambleRequest(): void {

@@ -75,6 +75,16 @@ export function configureSockets(io, db) {
         });
     });
 
+    socket.on('stateChange', (data: { roomId: string, userState: UserState }) => {
+      db.collection('rooms')
+        .updateOne({ _id: new ObjectID(data.roomId), 'userStates.userId': data.userState.userId }, {
+          $set: { 'userStates.$': data.userState }
+        })
+        .then(() => {
+          socket.broadcast.to(data.roomId).emit('stateChange', data.userState);
+        });
+    });
+
     function newScrambleForRoom(room: Room) {
       room.solveIndex += 1;
       _(room.userStates)
