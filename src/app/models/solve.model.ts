@@ -6,6 +6,7 @@ export enum SolveState {
 }
 
 export interface Solve {
+  userId: string;
   time: number;
   scramble: string;
   index: number;

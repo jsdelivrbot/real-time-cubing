@@ -15,8 +15,6 @@ export interface Room extends SimplifiedRoom {
   users: User[];
   messages: Message[];
   solveIndex: number;
-  solves: {
-    [userId: string]: Solve[];
-  };
+  solves: Solve[];
   userStates: UserState[];
 }

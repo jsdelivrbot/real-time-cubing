@@ -41,8 +41,8 @@ export class RoomService {
     this.socketService.socket.emit('message', { roomId, message });
   }
 
-  sendSolve(roomId: string, userId: string, solve: Solve): void {
-    this.socketService.socket.emit('solve', { roomId, userId, solve });
+  sendSolve(roomId: string, solve: Solve): void {
+    this.socketService.socket.emit('solve', { roomId, solve });
   }
 
   newScrambleRequest(roomId: string): void {
@@ -61,7 +61,7 @@ export class RoomService {
     return this.observableFromSocketEvent('message');
   }
 
-  onSolve(): Observable<{ userId: string, solve: Solve }> {
+  onSolve(): Observable<Solve> {
     return this.observableFromSocketEvent('solve');
   }
 

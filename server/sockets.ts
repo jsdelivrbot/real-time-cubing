@@ -60,12 +60,12 @@ export function configureSockets(io, db) {
         .then(newScrambleForRoom);
     });
 
-    socket.on('solve', (data: { roomId: string, userId: string, solve: Solve }) => {
+    socket.on('solve', (data: { roomId: string, solve: Solve }) => {
       db.collection('rooms').findOne({ _id: new ObjectID(data.roomId) })
         .then((room: Room) => {
-          _.merge(room.solves, { [data.userId]: [data.solve] });
-          _.find(room.userStates, { userId: data.userId }).state = State.Ready;
-          socket.broadcast.to(data.roomId).emit('solve', _.pick(data, ['userId', 'solve']));
+          room.solves.push(data.solve);
+          _.find(room.userStates, { userId: data.solve.userId }).state = State.Ready;
+          socket.broadcast.to(data.roomId).emit('solve', data.solve);
           const everyoneReady = _(room.userStates).map('state').difference([State.Ready, State.Spectating]).isEmpty();
           if (everyoneReady) {
             return newScrambleForRoom(room);
