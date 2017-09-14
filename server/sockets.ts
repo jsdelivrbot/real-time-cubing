@@ -36,7 +36,9 @@ export function configureSockets(io, db) {
     socket.on('leaveRoom', (data: { roomId: string; user: User; }) => {
       db.collection('rooms')
         .findOne({ _id: new ObjectID(data.roomId) })
-        .then((room: Room) => removeUserFromRoom(data.user, room));
+        .then((room: Room) =>
+          removeUserFromRoom(data.user, room).then(() => newScrambleForRoomIfReady(room))
+        );
     });
 
     socket.on('disconnect', () => {
@@ -55,23 +57,16 @@ export function configureSockets(io, db) {
         });
     });
 
-    socket.on('newScrambleRequest', (roomId: string) => {
-      db.collection('rooms').findOne({ _id: new ObjectID(roomId) })
-        .then(newScrambleForRoom);
-    });
-
     socket.on('solve', (data: { roomId: string, solve: Solve }) => {
       db.collection('rooms').findOne({ _id: new ObjectID(data.roomId) })
         .then((room: Room) => {
           room.solves.push(data.solve);
           _.find(room.userStates, { userId: data.solve.userId }).state = State.Ready;
           socket.broadcast.to(data.roomId).emit('solve', data.solve);
-          const everyoneReady = _(room.userStates).map('state').difference([State.Ready, State.Spectating]).isEmpty();
-          if (everyoneReady) {
-            return newScrambleForRoom(room);
-          } else {
-            return db.collection('rooms').updateOne({ _id: new ObjectID(data.roomId) }, room);
-          }
+          return newScrambleForRoomIfReady(room).then(updated => {
+            /* Ensure the changes are saved if the room hasn't been updated. */
+            return updated || db.collection('rooms').updateOne({ _id: new ObjectID(data.roomId) }, room);
+          });
         });
     });
 
@@ -85,16 +80,25 @@ export function configureSockets(io, db) {
         });
     });
 
-    function newScrambleForRoom(room: Room) {
-      room.solveIndex += 1;
-      _(room.userStates)
-        .filter({ state: State.Ready })
-        .each((userState: UserState) => userState.state = State.Scrambling);
-      return db.collection('rooms')
-        .updateOne({ _id: new ObjectID(room._id) }, room)
-        .then(() => {
-          io.to(room._id).emit('scramble', scrambleFor(room.event.id));
+    socket.on('newScrambleRequest', (roomId: string) => {
+      db.collection('rooms').findOne({ _id: new ObjectID(roomId) })
+        .then(newScrambleForRoomIfReady);
+    });
+
+    function newScrambleForRoomIfReady(room: Room): Promise<boolean> {
+      const everyoneReady = _(room.userStates).map('state').difference([State.Ready, State.Spectating]).isEmpty();
+      if (everyoneReady) {
+        room.solveIndex += 1;
+        _.filter(room.userStates, { state: State.Ready }).forEach((userState: UserState) => {
+          userState.state = State.Scrambling;
         });
+        return db.collection('rooms')
+          .updateOne({ _id: new ObjectID(room._id) }, room)
+          .then(() => io.to(room._id).emit('scramble', scrambleFor(room.event.id)))
+          .then(() => true);
+      } else {
+        return Promise.resolve(false);
+      }
     }
 
     function removeUserFromRoom(user: User, room: Room) {
