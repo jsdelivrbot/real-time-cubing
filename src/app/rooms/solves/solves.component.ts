@@ -1,4 +1,4 @@
-import { Component, Input, DoCheck, IterableDiffers } from '@angular/core';
+import { Component, Input, DoCheck, IterableDiffers, IterableDiffer } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -16,12 +16,13 @@ export class SolvesComponent implements DoCheck {
   @Input() solves: Solve[];
   @Input() users: User[];
 
-  tableData: BehaviorSubject<any> = new BehaviorSubject({});
-  tableDataSource = new TableDataSource(this.tableData);
-  displayedColumns: any[];
+  tableData: any[] = [];
+  tableDataChange: BehaviorSubject<any[]> = new BehaviorSubject(this.tableData);
+  tableDataSource = new TableDataSource(this.tableDataChange);
+  displayedColumns: any[] = ['solveNumber'];
 
-  solvesDiffer: any;
-  usersDiffer: any;
+  solvesDiffer: IterableDiffer<Solve>;
+  usersDiffer: IterableDiffer<User>;
 
   constructor(private differs: IterableDiffers) {
     this.solvesDiffer = differs.find([]).create(null);
@@ -29,15 +30,19 @@ export class SolvesComponent implements DoCheck {
   }
 
   ngDoCheck() {
-    if (this.solvesDiffer.diff(this.solves) || this.usersDiffer.diff(this.users)) {
-      this.displayedColumns = ['solveNumber', ..._.map(this.users, '_id')];
-      this.tableData.next(_.map(_.groupBy(this.solves, 'index'), (solves: Solve[], solveIndex: string) => {
-        const row: any = {};
-        row.solveNumber = _.toNumber(solveIndex) + 1;
-        solves.forEach(solve => row[solve.userId] = solve);
-        row.bestTime = _.min(_.map(solves, 'time'));
-        return row;
-      }));
+    const userChanges = this.usersDiffer.diff(this.users);
+    if (userChanges) {
+      userChanges.forEachAddedItem(({ item: user }) => this.displayedColumns.push(user._id));
+      userChanges.forEachRemovedItem(({ item: user }) => _.remove(this.displayedColumns, user._id));
+    }
+    const solveChanges = this.solvesDiffer.diff(this.solves);
+    if (solveChanges) {
+      solveChanges.forEachAddedItem(({ item: solve }) => {
+        const row = this.tableData[solve.index] = this.tableData[solve.index] || { bestTime: solve.time };
+        row[solve.userId] = solve;
+        row.bestTime = _.min([row.bestTime, solve.time]);
+      });
+      this.tableDataChange.next(this.tableData);
       /* Scroll to the most recent time. */
       const table = document.getElementsByClassName('mat-table')[0];
       table.scrollTop = table.scrollHeight;
@@ -45,12 +50,12 @@ export class SolvesComponent implements DoCheck {
   }
 }
 
-export class TableDataSource extends DataSource<any> {
+class TableDataSource extends DataSource<any> {
   constructor(private data) {
     super();
   }
 
-  connect(): Observable<any> {
+  connect(): Observable<any[]> {
     return this.data;
   }
 

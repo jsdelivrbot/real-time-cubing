@@ -1,9 +1,9 @@
 <div class="mat-elevation-z5 solves-table-container">
-  <md-table #table [dataSource]="tableDataSource">
+  <md-table [dataSource]="tableDataSource">
     <ng-container mdColumnDef="solveNumber">
       <md-header-cell *mdHeaderCellDef></md-header-cell>
-      <md-cell *mdCellDef="let row">
-        <span class="mat-hint">{{row?.solveNumber}}</span>
+      <md-cell *mdCellDef="let row; index as solveIndex">
+        <span class="mat-hint">{{solveIndex + 1}}</span>
       </md-cell>
     </ng-container>
     <ng-container [mdColumnDef]="user._id" *ngFor="let user of users">
