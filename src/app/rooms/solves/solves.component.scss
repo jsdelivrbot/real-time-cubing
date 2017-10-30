@@ -1,0 +1,41 @@
+.solves-table-container {
+  .mat-table {
+    height: 326px; /* Shows exactly 5 solves. */
+    overflow: auto;
+
+    /* Workaround taken from https://github.com/angular/material2/issues/5885 */
+    .mat-header-row {
+      position: sticky;
+      top: 0;
+      background: inherit; /* Initially the row is transparent, so that the scrolled content is visible. */
+    }
+
+    .mat-cell:nth-child(1), .mat-header-cell:nth-child(1) {
+      flex: 0 0 30px; /* Set a small width for the solve number column. */
+    }
+
+    .user {
+      padding: 5px;
+
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+
+      .averages {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .name {
+        font-size: 1.5em;
+      }
+    }
+
+    .best-time {
+      color: red;
+    }
+  }
+}

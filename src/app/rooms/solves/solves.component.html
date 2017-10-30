@@ -1,0 +1,27 @@
+<div class="mat-elevation-z5 solves-table-container">
+  <md-table #table [dataSource]="tableDataSource">
+    <ng-container mdColumnDef="solveNumber">
+      <md-header-cell *mdHeaderCellDef></md-header-cell>
+      <md-cell *mdCellDef="let row">
+        <span class="mat-hint">{{row?.solveNumber}}</span>
+      </md-cell>
+    </ng-container>
+    <ng-container [mdColumnDef]="user._id" *ngFor="let user of users">
+      <md-header-cell *mdHeaderCellDef>
+        <div class="user">
+          <img [src]="user.avatar.thumbUrl" class="user-avatar">
+          <div class="averages">
+            <div>Avg5: 8.11</div>
+            <div>Avg12: 9.43</div>
+          </div>
+          <div class="name">{{user.name}}</div>
+        </div>
+      </md-header-cell>
+      <md-cell *mdCellDef="let row">
+        <span [class.best-time]="row.bestTime === row[user._id]?.time">{{row[user._id]?.time}}</span>
+      </md-cell>
+    </ng-container>
+    <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
+    <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
+  </md-table>
+</div>
