@@ -33,7 +33,7 @@ export class SolvesComponent implements DoCheck {
     const userChanges = this.usersDiffer.diff(this.users);
     if (userChanges) {
       userChanges.forEachAddedItem(({ item: user }) => this.displayedColumns.push(user._id));
-      userChanges.forEachRemovedItem(({ item: user }) => _.remove(this.displayedColumns, user._id));
+      userChanges.forEachRemovedItem(({ item: user }) => _.pull(this.displayedColumns, user._id));
     }
     const solveChanges = this.solvesDiffer.diff(this.solves);
     if (solveChanges) {
