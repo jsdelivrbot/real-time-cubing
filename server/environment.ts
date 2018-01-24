@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   Object.assign(environment, development, {
     port: 3000,
-    wcaOAuthClientSecret: '6dcdb185c7c3ef2e1c2c58912fbb6ead2676d9ec63da2cb7966263c39464ce5d',
+    wcaOAuthClientSecret: 'example-secret',
     jwtSecret: 'secret',
     mongodbUri: 'mongodb://localhost:27017/realtimecubing_development',
   });
