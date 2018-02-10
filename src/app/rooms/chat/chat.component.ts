@@ -10,7 +10,7 @@ import { Message } from '../../models/message.model';
 })
 export class ChatComponent {
   @Input() messages: Message[];
-  @Output() onMessage = new EventEmitter<string>();
+  @Output() message = new EventEmitter<string>();
   messageContent = '';
 
   constructor() { }
@@ -18,7 +18,7 @@ export class ChatComponent {
   onSubmit(): void {
     const messageContent = _.trim(this.messageContent);
     if (messageContent) {
-      this.onMessage.emit(messageContent);
+      this.message.emit(messageContent);
       this.messageContent = '';
     }
   }
