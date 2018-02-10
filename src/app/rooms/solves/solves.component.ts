@@ -17,8 +17,7 @@ export class SolvesComponent implements DoCheck {
   @Input() users: User[];
 
   tableData: any[] = [];
-  tableDataChange: BehaviorSubject<any[]> = new BehaviorSubject(this.tableData);
-  tableDataSource = new TableDataSource(this.tableDataChange);
+  tableDataSource: BehaviorSubject<any[]> = new BehaviorSubject(this.tableData);
   displayedColumns: any[] = ['solveNumber'];
 
   solvesDiffer: IterableDiffer<Solve>;
@@ -42,22 +41,10 @@ export class SolvesComponent implements DoCheck {
         row[solve.userId] = solve;
         row.bestTime = _.min([row.bestTime, solve.time]);
       });
-      this.tableDataChange.next(this.tableData);
+      this.tableDataSource.next(this.tableData);
       /* Scroll to the most recent time. */
       const table = document.getElementsByClassName('mat-table')[0];
       table.scrollTop = table.scrollHeight;
     }
   }
-}
-
-class TableDataSource extends DataSource<any> {
-  constructor(private data) {
-    super();
-  }
-
-  connect(): Observable<any[]> {
-    return this.data;
-  }
-
-  disconnect() { }
 }
