@@ -46,7 +46,7 @@ export function configureSockets(io, db) {
       const user: User = (socket as any).decoded_token.user;
       db.collection('rooms')
         .findOne({ users: { $in: [user] } })
-        .then((room: Room) => removeUserFromRoom(user, room));
+        .then((room: Room) => room && removeUserFromRoom(user, room));
     });
 
     socket.on('message', (data: { roomId: string, message: Message }) => {
@@ -65,7 +65,7 @@ export function configureSockets(io, db) {
           socket.broadcast.to(data.roomId).emit('solve', data.solve);
           return newScrambleForRoomIfReady(room).then(updated => {
             /* Ensure the changes are saved if the room hasn't been updated. */
-            return updated || db.collection('rooms').updateOne({ _id: new ObjectID(data.roomId) }, room);
+            return updated || db.collection('rooms').updateOne({ _id: new ObjectID(data.roomId) }, { $set: room });
           });
         });
     });
@@ -93,7 +93,7 @@ export function configureSockets(io, db) {
           userState.state = State.Scrambling;
         });
         return db.collection('rooms')
-          .updateOne({ _id: new ObjectID(room._id) }, room)
+          .updateOne({ _id: new ObjectID(room._id) }, { $set: room })
           .then(() => io.to(room._id).emit('scramble', scrambleFor(room.event.id)))
           .then(() => true);
       } else {
@@ -107,7 +107,7 @@ export function configureSockets(io, db) {
       _.remove(room.userStates, { userId: user._id });
       if (room.users.length) {
         return db.collection('rooms')
-                 .updateOne({ _id: room._id }, room)
+                 .updateOne({ _id: room._id }, { $set: room })
                  .then(() => {
                    socket.leave(room._id);
                    io.to(room._id).emit('userLeft', user);

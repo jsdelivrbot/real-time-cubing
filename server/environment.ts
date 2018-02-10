@@ -9,13 +9,15 @@ if (process.env.NODE_ENV === 'production') {
     port: process.env.PORT,
     wcaOAuthClientSecret: process.env.WCA_OAUTH_SECRET,
     jwtSecret: process.env.JWT_SECRET,
-    mongodbUri: process.env.MONGODB_URI
+    mongodbUri: process.env.MONGODB_URI,
+    databaseName: process.env.DATABASE_NAME
   });
 } else {
   Object.assign(environment, development, {
     port: 3000,
     wcaOAuthClientSecret: 'example-secret',
     jwtSecret: 'secret',
-    mongodbUri: 'mongodb://localhost:27017/realtimecubing_development',
+    mongodbUri: 'mongodb://localhost:27017',
+    databaseName: 'realtimecubing_development'
   });
 }

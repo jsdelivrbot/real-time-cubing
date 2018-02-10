@@ -1,11 +1,11 @@
-<md-nav-list>
-  <h3 md-subheader>Rooms</h3>
-  <a md-list-item *ngFor="let room of roomService.rooms" [routerLink]="['/rooms', room._id]">
-    <md-icon md-list-icon fontSet="cubing-icon" [fontIcon]="room.event.icon"></md-icon>
-    <h4 md-line>{{room.name}}</h4>
-    <p md-line> {{room.event.name}}</p>
+<mat-nav-list>
+  <h3 mat-subheader>Rooms</h3>
+  <a mat-list-item *ngFor="let room of roomService.rooms" [routerLink]="['/rooms', room._id]">
+    <mat-icon mat-list-icon fontSet="cubing-icon" [fontIcon]="room.event.icon"></mat-icon>
+    <h4 mat-line>{{room.name}}</h4>
+    <p mat-line> {{room.event.name}}</p>
   </a>
-</md-nav-list>
+</mat-nav-list>
 
 <h3>New Room</h3>
 <app-room-form (create)="onCreateRoom($event)"></app-room-form>

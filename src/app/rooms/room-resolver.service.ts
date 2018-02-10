@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router, Resolve, RouterStateSnapshot, ActivatedRouteSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/empty';
+import { catchError } from 'rxjs/operators';
+import { empty } from 'rxjs/observable/empty';
 
 import { RoomService } from './room.service';
 import { Room } from '../models/room.model';
@@ -13,9 +13,11 @@ export class RoomResolver implements Resolve<Room> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Room> {
     const roomId = route.paramMap.get('id');
-    return this.roomService.getRoom(roomId).catch(error => {
-      this.router.navigate(['/rooms']);
-      return Observable.empty();
-    });
+    return this.roomService.getRoom(roomId).pipe(
+      catchError(error => {
+        this.router.navigate(['/rooms']);
+        return empty<Room>();
+      })
+    );
   }
 }

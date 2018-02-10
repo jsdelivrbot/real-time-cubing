@@ -27,6 +27,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('md-toolbar span').textContent).toContain('Real Time Cubing');
+    expect(compiled.querySelector('mat-toolbar span').textContent).toContain('Real Time Cubing');
   }));
 });

@@ -23,11 +23,11 @@ export class RoomService {
   }
 
   createRoom(room: SimplifiedRoom): Observable<SimplifiedRoom> {
-    return this.http.post('/api/rooms', room);
+    return this.http.post<SimplifiedRoom>('/api/rooms', room);
   }
 
   getRoom(roomId: string): Observable<Room> {
-    return this.http.get(`/api/rooms/${roomId}`);
+    return this.http.get<Room>(`/api/rooms/${roomId}`);
   }
 
   joinRoom(roomId: string, user: User): void {

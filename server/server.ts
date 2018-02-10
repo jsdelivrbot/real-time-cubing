@@ -25,7 +25,8 @@ io.use(socketIoJwt.authorize({
   handshake: true
 }));
 
-mongodb.MongoClient.connect(environment.mongodbUri).then(db => {
+mongodb.MongoClient.connect(environment.mongodbUri).then((client: mongodb.MongoClient) => {
+  const db = client.db(environment.databaseName);
   configureRoutes(app, io, db);
   configureSockets(io, db);
 

@@ -1,13 +1,13 @@
 <div class="mat-elevation-z5 solves-table-container">
-  <md-table [dataSource]="tableDataSource">
-    <ng-container mdColumnDef="solveNumber">
-      <md-header-cell *mdHeaderCellDef></md-header-cell>
-      <md-cell *mdCellDef="let row; index as solveIndex">
+  <mat-table [dataSource]="tableDataSource">
+    <ng-container matColumnDef="solveNumber">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let row; index as solveIndex">
         <span class="mat-hint">{{solveIndex + 1}}</span>
-      </md-cell>
+      </mat-cell>
     </ng-container>
-    <ng-container [mdColumnDef]="user._id" *ngFor="let user of users">
-      <md-header-cell *mdHeaderCellDef>
+    <ng-container [matColumnDef]="user._id" *ngFor="let user of users">
+      <mat-header-cell *matHeaderCellDef>
         <div class="user">
           <img [src]="user.avatar.thumbUrl" class="user-avatar">
           <div class="averages">
@@ -16,12 +16,12 @@
           </div>
           <div class="name">{{user.name}}</div>
         </div>
-      </md-header-cell>
-      <md-cell *mdCellDef="let row">
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
         <span [class.best-time]="row.bestTime === row[user._id]?.time">{{row[user._id]?.time}}</span>
-      </md-cell>
+      </mat-cell>
     </ng-container>
-    <md-header-row *mdHeaderRowDef="displayedColumns"></md-header-row>
-    <md-row *mdRowDef="let row; columns: displayedColumns;"></md-row>
-  </md-table>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
 </div>

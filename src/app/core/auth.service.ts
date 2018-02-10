@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { URLSearchParams } from '@angular/http';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { filter, map } from 'rxjs/operators';
 import * as jwtDecode from 'jwt-decode';
 
 import { environment } from '../../environments/environment';
@@ -21,13 +20,14 @@ export class AuthService {
     if (currentJwt) {
       this.onToken(currentJwt);
     }
-    Observable.fromEvent(window, 'storage')
-      .filter((event: StorageEvent) => event.key === 'jwt')
-      .map((event: StorageEvent) => event.newValue)
-      .subscribe(jwt => {
-        this.onToken(jwt);
-        this.router.navigate([this.redirectUrl]);
-      });
+    fromEvent(window, 'storage').pipe(
+      filter((event: StorageEvent) => event.key === 'jwt'),
+      map((event: StorageEvent) => event.newValue)
+    )
+    .subscribe(jwt => {
+      this.onToken(jwt);
+      this.router.navigate([this.redirectUrl]);
+    });
   }
 
   openWcaOAuthPopup(): void {
