@@ -63,7 +63,7 @@ export class TimerComponent {
   private reset(): void {
     this.startTime = null;
     this.time = null;
-    this.display = '';
+    this.display = null;
     this.penalty = Penalty.None;
     this.state = State.Scrambling;
   }

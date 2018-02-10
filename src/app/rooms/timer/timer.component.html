@@ -4,7 +4,7 @@
     <mat-icon>timer</mat-icon>
   </button>
 </div>
-<div class="mat-display-3">{{display}}</div>
+<div class="mat-display-3" *ngIf="display">{{display}}</div>
 <button mat-raised-button (click)="start()" *ngIf="state === State.Inspecting">Start</button>
 <button mat-raised-button (click)="stop()" *ngIf="state === State.Solving && !time">Stop</button>
 <form (ngSubmit)="submitTime()" *ngIf="time">
