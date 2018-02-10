@@ -1,9 +1,9 @@
 export enum State {
-  Ready,
-  Scrambling,
-  Inspecting,
-  Solving,
-  Spectating
+  Ready = 'ready',
+  Scrambling = 'scrambling',
+  Inspecting = 'inspecting',
+  Solving = 'solving',
+  Spectating = 'spectating'
 }
 
 export interface UserState {

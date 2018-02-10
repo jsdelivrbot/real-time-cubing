@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import * as _ from 'lodash';
 
-import { Solve } from '../../models/solve.model';
+import { Solve, Penalty } from '../../models/solve.model';
 import { State } from '../../models/user-state.model';
 
 @Component({
@@ -16,10 +16,12 @@ export class TimerComponent {
   startTime: number;
   time: number;
   display: string;
-  penalty: string;
+  penalty: Penalty;
   state: State;
   inspectionTimers: NodeJS.Timer[];
+  /* Make enums available for the view. */
   State = State;
+  Penalty = Penalty;
 
   constructor() {
     this.reset();
@@ -52,7 +54,7 @@ export class TimerComponent {
   submitTime(): void {
     this.setAndEmitState(State.Ready);
     /* Notify about the time. */
-    const solve = { time: this.time, scramble: this.scramble } as Solve;
+    const solve = { time: this.time, scramble: this.scramble, penalty: this.penalty } as Solve;
     this.solve.emit(solve);
     this.reset();
     this.scramble = null;
@@ -62,7 +64,7 @@ export class TimerComponent {
     this.startTime = null;
     this.time = null;
     this.display = '';
-    this.penalty = 'None';
+    this.penalty = Penalty.None;
     this.state = State.Scrambling;
   }
 

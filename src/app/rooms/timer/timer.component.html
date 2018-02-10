@@ -9,9 +9,9 @@
 <button mat-raised-button (click)="stop()" *ngIf="state === State.Solving && !time">Stop</button>
 <form (ngSubmit)="submitTime()" *ngIf="time">
   <mat-select name="penatly" [(ngModel)]="penalty">
-    <mat-option value="None">No penalty</mat-option>
-    <mat-option value="+2">+2 penalty</mat-option>
-    <mat-option value="DNF">DNF</mat-option>
+    <mat-option value="{{Penalty.None}}">No penalty</mat-option>
+    <mat-option value="{{Penalty.PlusTwo}}">+2</mat-option>
+    <mat-option value="{{Penalty.DNF}}">DNF</mat-option>
   </mat-select>
   <button mat-raised-button>Done</button>
 </form>

@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../material/material.module';
 
 import { EventPickerComponent } from './event-picker/event-picker.component';
+import { SolvePipe } from './solve/solve.pipe';
 
 @NgModule({
   imports: [
@@ -12,12 +13,13 @@ import { EventPickerComponent } from './event-picker/event-picker.component';
     FormsModule,
     MaterialModule
   ],
-  declarations: [EventPickerComponent],
+  declarations: [EventPickerComponent, SolvePipe],
   exports: [
     CommonModule,
     FormsModule,
     MaterialModule,
-    EventPickerComponent
+    EventPickerComponent,
+    SolvePipe
   ]
 })
 export class SharedModule { }
