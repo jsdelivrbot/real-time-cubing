@@ -1,12 +1,4 @@
 <mat-toolbar color="primary">
-
-  <mat-menu #appMenu="matMenu">
-    <button mat-menu-item (click)="signOut()">Sign Out</button>
-  </mat-menu>
-  <button mat-icon-button [matMenuTriggerFor]="appMenu" *ngIf="auth.user">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <span class="fill-space"></span>
   <h2>Real Time Cubing</h2>
   <span class="fill-space"></span>
   <button mat-raised-button color="accent" (click)="signInWithWCA()" *ngIf="!auth.user">
@@ -16,4 +8,10 @@
     <span class="name">{{auth.user.name}}</span>
     <img [src]="auth.user.avatar.thumbUrl" class="user-avatar">
   </ng-template>
+  <mat-menu #appMenu="matMenu">
+    <button mat-menu-item (click)="signOut()">Sign Out</button>
+  </mat-menu>
+  <button mat-icon-button [matMenuTriggerFor]="appMenu" *ngIf="auth.user">
+    <mat-icon>more_vert</mat-icon>
+  </button>
 </mat-toolbar>
