@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import * as _ from 'lodash';
 
+import { TimePipe } from '../../shared/time/time.pipe';
 import { Solve, Penalty } from '../../models/solve.model';
 import { State } from '../../models/user-state.model';
 
@@ -23,7 +24,7 @@ export class TimerComponent {
   State = State;
   Penalty = Penalty;
 
-  constructor() {
+  constructor(private timePipe: TimePipe) {
     this.reset();
   }
 
@@ -48,7 +49,7 @@ export class TimerComponent {
   stop(): void {
     const timeMiliseconds = (performance.now() - this.startTime);
     this.time = _.floor(timeMiliseconds / 1000, 2);
-    this.display = this.time.toString();
+    this.display = this.timePipe.transform(this.time);
   }
 
   submitTime(): void {
