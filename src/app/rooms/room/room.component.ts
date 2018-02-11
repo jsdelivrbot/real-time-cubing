@@ -109,6 +109,10 @@ export class RoomComponent implements OnDestroy, OnInit {
     this.roomService.newScrambleRequest(this.room._id);
   }
 
+  currentUserSolves(): Solve[] {
+    return _.filter(this.room.solves, { userId: this.auth.user._id });
+  }
+
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();

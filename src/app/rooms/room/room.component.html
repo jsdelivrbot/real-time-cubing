@@ -2,4 +2,5 @@
 <app-timer [scramble]="scramble" (solve)="sendSolve($event)" (stateChange)="sendState($event)"></app-timer>
 <app-solves [users]="room.users" [solves]="room.solves"></app-solves>
 <app-chat [messages]="room.messages" (message)="sendMessage($event)"></app-chat>
+<app-averages [solves]="currentUserSolves()"></app-averages>
 <button mat-raised-button (click)="leave()">Leave</button>

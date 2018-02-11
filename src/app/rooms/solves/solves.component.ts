@@ -1,6 +1,5 @@
 import { Component, Input, DoCheck, IterableDiffers, IterableDiffer } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
-import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as _ from 'lodash';
 

@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { SocketService } from './socket.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { AuthGuard } from './auth-guard.service';
+import { SolveService } from './solve.service';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { AuthGuard } from './auth-guard.service';
   providers: [
     AuthService,
     SocketService,
-    AuthGuard
+    AuthGuard,
+    SolveService
   ],
   exports: [
     NavbarComponent

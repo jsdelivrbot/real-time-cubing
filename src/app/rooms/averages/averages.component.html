@@ -1,0 +1,17 @@
+<mat-table [dataSource]="tableDataSource">
+  <ng-container matColumnDef="type">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let row">{{row.type}}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="current">
+    <mat-header-cell *matHeaderCellDef>Current</mat-header-cell>
+    <mat-cell *matCellDef="let row">{{row.current | time}}</mat-cell>
+  </ng-container>
+  <ng-container matColumnDef="best">
+    <mat-header-cell *matHeaderCellDef>Best</mat-header-cell>
+    <mat-cell *matCellDef="let row">{{row.best | time}}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
