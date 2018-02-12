@@ -38,9 +38,9 @@ export class SolvesComponent implements DoCheck {
     const solveChanges = this.solvesDiffer.diff(this.solves);
     if (solveChanges) {
       solveChanges.forEachAddedItem(({ item: solve }) => {
-        const row = this.tableData[solve.index] = this.tableData[solve.index] || { bestTime: solve.time };
+        const row = this.tableData[solve.index] = this.tableData[solve.index] || { bestTime: Infinity };
         row[solve.userId] = solve;
-        row.bestTime = _.min([row.bestTime, solve.time]);
+        row.bestTime = _.min([row.bestTime, this.solveService.timeWithPenalty(solve)]);
       });
       this.tableDataSource.next(this.tableData);
       this.averagesByUser = this.calculateAveragesByUser();
@@ -55,5 +55,10 @@ export class SolvesComponent implements DoCheck {
       ao5: solves.length >= 5 ? this.solveService.calculateAverage(_.takeRight(solves, 5), 1) : null,
       ao12: solves.length >= 12 ? this.solveService.calculateAverage(_.takeRight(solves, 12), 1) : null
     }));
+  }
+
+
+  isBest(solve: Solve, bestTime: number): boolean {
+    return this.solveService.timeWithPenalty(solve) === bestTime;
   }
 }

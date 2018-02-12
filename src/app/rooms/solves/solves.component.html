@@ -18,7 +18,7 @@
         </div>
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
-        <span [class.best-time]="row.bestTime === row[user._id]?.time">{{row[user._id] | solve}}</span>
+        <span *ngIf="row[user._id]" [class.best-time]="isBest(row[user._id], row.bestTime)">{{row[user._id] | solve}}</span>
       </mat-cell>
     </ng-container>
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
