@@ -88,7 +88,6 @@ export function configureSockets(io, db) {
     function newScrambleForRoomIfReady(room: Room): Promise<boolean> {
       const everyoneReady = _(room.userStates).map('state').difference([State.Ready, State.Spectating]).isEmpty();
       if (everyoneReady) {
-        room.solveIndex += 1;
         _.filter(room.userStates, { state: State.Ready }).forEach((userState: UserState) => {
           userState.state = State.Scrambling;
         });

@@ -1,4 +1,4 @@
-<button mat-raised-button (click)="newScrambleRequest()" *ngIf="!scramble && room.solveIndex === -1">New scramble</button>
+<button mat-raised-button (click)="newScrambleRequest()" *ngIf="!scramble && room.solves.length === 0">New scramble</button>
 <app-timer [scramble]="scramble" (solve)="sendSolve($event)" (stateChange)="sendState($event)"></app-timer>
 <app-solves [users]="room.users" [solves]="room.solves"></app-solves>
 <app-chat [messages]="room.messages" (message)="sendMessage($event)"></app-chat>

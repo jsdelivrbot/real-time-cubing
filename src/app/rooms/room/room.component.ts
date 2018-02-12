@@ -75,7 +75,6 @@ export class RoomComponent implements OnDestroy, OnInit {
         .pipe(takeUntil(this.ngUnsubscribe))
         .subscribe((scramble: string) => {
           this.scramble = scramble;
-          this.room.solveIndex += 1;
           _(this.room.userStates)
             .filter({ state: State.Ready })
             .each((userState: UserState) => userState.state = State.Scrambling);
@@ -95,7 +94,7 @@ export class RoomComponent implements OnDestroy, OnInit {
 
   sendSolve(solve: Solve): void {
     solve.userId = this.auth.user._id;
-    solve.index = this.room.solveIndex;
+    solve.index = (_.max(_.map(this.room.solves, 'index')) + 1) || 0;
     this.roomService.sendSolve(this.room._id, solve);
     this.room.solves.push(solve);
     this.currentUserSolves.push(solve);
