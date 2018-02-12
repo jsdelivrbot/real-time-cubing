@@ -7,6 +7,8 @@ export class TimePipe implements PipeTransform {
   transform(time: number): string {
     if (time === Infinity) {
       return 'DNF';
+    } else if (!time) {
+      return '';
     }
     const date = new Date(null);
     date.setMilliseconds(Math.floor(time * 1000));

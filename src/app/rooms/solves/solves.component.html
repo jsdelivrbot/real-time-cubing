@@ -11,8 +11,8 @@
         <div class="user">
           <img [src]="user.avatar.thumbUrl" class="user-avatar">
           <div class="averages">
-            <div>Avg5: 8.11</div>
-            <div>Avg12: 9.43</div>
+            <div>Avg5: {{averagesByUser[user._id]?.ao5 | time}}</div>
+            <div>Avg12: {{averagesByUser[user._id]?.ao12 | time}}</div>
           </div>
           <div class="name">{{user.name}}</div>
         </div>
