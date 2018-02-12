@@ -21,6 +21,7 @@ import { User } from '../../models/user.model';
 export class RoomComponent implements OnDestroy, OnInit {
   room: Room;
   scramble: string;
+  currentUserSolves: Solve[];
   private ngUnsubscribe = new Subject<void>();
 
   constructor(
@@ -36,6 +37,7 @@ export class RoomComponent implements OnDestroy, OnInit {
       this.roomService.joinRoom(this.room._id, this.auth.user);
       this.room.users.push(this.auth.user);
       this.room.userStates.push({ userId: this.auth.user._id, state: State.Ready } as UserState);
+      this.currentUserSolves = _.filter(this.room.solves, { userId: this.auth.user._id });
     });
 
     this.roomService.onUserJoined()
@@ -96,6 +98,7 @@ export class RoomComponent implements OnDestroy, OnInit {
     solve.index = this.room.solveIndex;
     this.roomService.sendSolve(this.room._id, solve);
     this.room.solves.push(solve);
+    this.currentUserSolves.push(solve);
     _.find(this.room.userStates, { userId: solve.userId }).state = State.Ready;
   }
 
@@ -107,10 +110,6 @@ export class RoomComponent implements OnDestroy, OnInit {
 
   newScrambleRequest(): void {
     this.roomService.newScrambleRequest(this.room._id);
-  }
-
-  currentUserSolves(): Solve[] {
-    return _.filter(this.room.solves, { userId: this.auth.user._id });
   }
 
   ngOnDestroy() {
