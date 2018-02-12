@@ -1,4 +1,4 @@
-import { Component, Input, DoCheck, IterableDiffers, IterableDiffer } from '@angular/core';
+import { Component, Input, DoCheck, AfterViewInit, IterableDiffers, IterableDiffer, ViewChild, ElementRef } from '@angular/core';
 import { DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as _ from 'lodash';
@@ -12,9 +12,10 @@ import { User } from '../../models/user.model';
   templateUrl: './solves.component.html',
   styleUrls: ['./solves.component.scss']
 })
-export class SolvesComponent implements DoCheck {
+export class SolvesComponent implements DoCheck, AfterViewInit {
   @Input() solves: Solve[];
   @Input() users: User[];
+  @ViewChild('solvesTable', { read: ElementRef }) solvesTable: ElementRef;
 
   averagesByUser: { [userId: string]: { ao5: number, ao12: number } } = {};
   tableData: any[] = [];
@@ -44,10 +45,12 @@ export class SolvesComponent implements DoCheck {
       });
       this.tableDataSource.next(this.tableData);
       this.averagesByUser = this.calculateAveragesByUser();
-      /* Scroll to the most recent time. */
-      const table = document.getElementsByClassName('mat-table')[0];
-      table.scrollTop = table.scrollHeight;
+      this.scrollSolvesTable();
     }
+  }
+
+  ngAfterViewInit() {
+    this.scrollSolvesTable();
   }
 
   calculateAveragesByUser() {
@@ -57,6 +60,11 @@ export class SolvesComponent implements DoCheck {
     }));
   }
 
+  scrollSolvesTable(): void {
+    /* Scroll to the most recent time. */
+    const table = this.solvesTable.nativeElement;
+    table.scrollTop = table.scrollHeight;
+  }
 
   isBest(solve: Solve, bestTime: number): boolean {
     return this.solveService.timeWithPenalty(solve) === bestTime;

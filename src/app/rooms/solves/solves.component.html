@@ -1,5 +1,5 @@
 <div class="mat-elevation-z5 solves-table-container">
-  <mat-table [dataSource]="tableDataSource">
+  <mat-table #solvesTable [dataSource]="tableDataSource">
     <ng-container matColumnDef="solveNumber">
       <mat-header-cell *matHeaderCellDef></mat-header-cell>
       <mat-cell *matCellDef="let row; index as solveIndex">
