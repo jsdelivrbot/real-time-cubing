@@ -11,7 +11,7 @@ import { RoomResolver } from './room-resolver.service';
 import { ChatComponent } from './chat/chat.component';
 import { TimerComponent } from './timer/timer.component';
 import { SolvesComponent } from './solves/solves.component';
-import { AveragesComponent } from './averages/averages.component';
+import { AveragesComponent, AverageDialogComponent } from './averages/averages.component';
 
 @NgModule({
   imports: [
@@ -26,8 +26,10 @@ import { AveragesComponent } from './averages/averages.component';
     ChatComponent,
     TimerComponent,
     SolvesComponent,
-    AveragesComponent
+    AveragesComponent,
+    AverageDialogComponent
   ],
+  entryComponents: [AverageDialogComponent],
   providers: [RoomService, RoomResolver]
 })
 export class RoomsModule { }

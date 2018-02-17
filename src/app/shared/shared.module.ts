@@ -15,7 +15,7 @@ import { TimePipe } from './time/time.pipe';
     MaterialModule
   ],
   declarations: [EventPickerComponent, SolvePipe, TimePipe],
-  providers: [TimePipe],
+  providers: [TimePipe, SolvePipe],
   exports: [
     CommonModule,
     FormsModule,

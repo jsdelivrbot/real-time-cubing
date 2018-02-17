@@ -1,9 +1,22 @@
-import { Component, Input, DoCheck, IterableDiffers, IterableDiffer  } from '@angular/core';
+import { Component, Input, DoCheck, IterableDiffers, IterableDiffer, Inject } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as _ from 'lodash';
+import * as clipboard from 'clipboard-polyfill';
 
 import { SolveService } from '../../core/solve.service';
 import { Solve } from '../../models/solve.model';
+import { TimePipe } from '../../shared/time/time.pipe';
+import { SolvePipe } from '../../shared/solve/solve.pipe';
+
+interface Average {
+  type: string,
+  name: string,
+  solvesCount: number,
+  trimmedCount: number,
+  time: number,
+  solves: Solve[]
+}
 
 @Component({
   selector: 'app-averages',
@@ -28,7 +41,7 @@ export class AveragesComponent implements DoCheck {
     { type: 'Ao100', name: 'Average of 100', solvesCount: 100, trimmedCount: 5, time: Infinity, solves: [] }
   ];
 
-  constructor(private differs: IterableDiffers, private solveService: SolveService) {
+  constructor(private differs: IterableDiffers, private solveService: SolveService, private dialog: MatDialog) {
     this.solvesDiffer = differs.find([]).create(null);
   }
 
@@ -56,15 +69,47 @@ export class AveragesComponent implements DoCheck {
   }
 
   showAverage(average: Average): void {
-    console.log(average);
+    this.dialog.open(AverageDialogComponent, {
+      data: { average }
+    });
   }
 }
 
-interface Average {
-  type: string,
-  name: string,
-  solvesCount: number,
-  trimmedCount: number,
-  time: number,
-  solves: Solve[]
+@Component({
+  selector: 'app-average-dialog',
+  templateUrl: 'average-dialog.component.html',
+})
+export class AverageDialogComponent {
+  average: Average;
+  text: string;
+  trimmedSolves: Solve[];
+
+  constructor(
+    private timePipe: TimePipe,
+    private solvePipe: SolvePipe,
+    private solveService: SolveService,
+    @Inject(MAT_DIALOG_DATA) private data
+  ) {
+    this.average = data.average;
+
+    const sortedSolves = _.sortBy(this.average.solves, (solve: Solve) => solveService.timeWithPenalty(solve));
+    this.trimmedSolves = _.concat(
+      _.take(sortedSolves, this.average.trimmedCount),
+      _.takeRight(sortedSolves, this.average.trimmedCount)
+    );
+
+    this.text = `${this.average.name}: ${timePipe.transform(this.average.time)}\n\n`
+    this.text += this.average.solves
+      .map((solve: Solve, index: number) => `${index + 1}. ${this.formatSolve(solve)} ${solve.scramble}`)
+      .join('\n');
+  }
+
+  formatSolve(solve: Solve): string {
+    const formatted = this.solvePipe.transform(solve);
+    return this.trimmedSolves.includes(solve) ? `(${formatted})` : formatted;
+  }
+
+  copyToClipboard(): void {
+    (clipboard as any).writeText(this.text);
+  }
 }
