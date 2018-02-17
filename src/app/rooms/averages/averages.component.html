@@ -1,15 +1,15 @@
 <mat-table [dataSource]="tableDataSource">
   <ng-container matColumnDef="type">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-    <mat-cell *matCellDef="let row">{{row.type}}</mat-cell>
+    <mat-cell *matCellDef="let row">{{row.current.type}}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="current">
     <mat-header-cell *matHeaderCellDef>Current</mat-header-cell>
-    <mat-cell *matCellDef="let row">{{row.current | time}}</mat-cell>
+    <mat-cell *matCellDef="let row" (click)="showAverage(row.current)">{{row.current.time | time}}</mat-cell>
   </ng-container>
   <ng-container matColumnDef="best">
     <mat-header-cell *matHeaderCellDef>Best</mat-header-cell>
-    <mat-cell *matCellDef="let row">{{row.best | time}}</mat-cell>
+    <mat-cell *matCellDef="let row" (click)="showAverage(row.best)">{{row.best.time | time}}</mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
